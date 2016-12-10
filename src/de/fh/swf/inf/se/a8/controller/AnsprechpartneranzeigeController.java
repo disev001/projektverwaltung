@@ -4,6 +4,7 @@ import de.fh.swf.inf.se.a8.Main;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
 import de.fh.swf.inf.se.a8.model.TreeViewHelper;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
