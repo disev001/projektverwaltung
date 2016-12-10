@@ -1,6 +1,8 @@
 package de.fh.swf.inf.se.a8;
 
+import de.fh.swf.inf.se.a8.controller.AnsprechpartnerAnlegenController;
 import de.fh.swf.inf.se.a8.controller.AnsprechpartneranzeigeController;
+import de.fh.swf.inf.se.a8.controller.OrganisationAnlegenController;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
 import de.fh.swf.inf.se.a8.model.Projekt;
@@ -13,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -78,8 +81,58 @@ public class Main extends Application {
             }
         });
     }
-
-
+    /**
+     * Laden der Stage für Unternehmen anlegen Dialogfenster
+     * @param list aktuelle unternehmen
+     *
+     * @return reaktion auf die art des fenster schließens
+     */
+    public boolean showNewOrg(ObservableList<Organisation> list) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/organisationanlegen.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ogranisation anlegen");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            OrganisationAnlegenController controller= loader.getController();
+            controller.setMainApp(this);
+            dialogStage.showAndWait();
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    /**
+     * Laden der Stage für Unternehmen anlegen Dialogfenster
+     * @param list aktuelle unternehmen
+     *
+     * @return reaktion auf die art des fenster schließens
+     */
+    public boolean showNewAnsp(ObservableList<Organisation> list) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/ansprechpartneranlegen.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ansprechpartner anlegen");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            AnsprechpartnerAnlegenController controller= loader.getController();
+            controller.setMainApp(this);
+            dialogStage.showAndWait();
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     //Übergabe an fremde Klassen um damit zu interagieren
     public ObservableList<Ansprechpartner> getAnsprechpartners() {
         return ansprechpartners;

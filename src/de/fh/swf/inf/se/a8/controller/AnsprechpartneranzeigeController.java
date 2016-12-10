@@ -16,10 +16,10 @@ import java.util.ArrayList;
 public class AnsprechpartneranzeigeController {
     @FXML
     private TreeView<String> tv_AP;
-    @FXML
-    private Button btn_addAP;
+
     private ObservableList<Ansprechpartner> ansprechpartnerList;
     private ObservableList<Organisation> organisationList;
+
 
     private Main mainApp;
 
@@ -50,5 +50,14 @@ public class AnsprechpartneranzeigeController {
     public void setListe() {
         this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
         this.organisationList = this.mainApp.getOrganisations();
+    }
+    @FXML
+    public  void handleNewOrg (){
+       this.mainApp.showNewOrg(this.organisationList);
+    }
+
+    @FXML
+    public  void handleNewAnsprechpartner (){
+        this.mainApp.showNewAnsp(this.organisationList);
     }
 }
