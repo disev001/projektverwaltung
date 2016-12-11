@@ -12,13 +12,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Created by dsee on 09.12.2016.
  */
 public class AnsprechpartneranzeigeController {
     @FXML
-    private TreeView<String> tv_AP;
+    private TreeView<Object> tv_AP;
     @FXML
     private Label lblAPname;
     @FXML
@@ -29,10 +30,25 @@ public class AnsprechpartneranzeigeController {
     private Label lblAPorg;
     @FXML
     private Label lblAPansch;
-
+    @FXML
+    private MenuItem miSave;
+    @FXML
+    private MenuItem miClose;
+    @FXML
+    private MenuItem miAddAP;
+    @FXML
+    private MenuItem miAddOrg;
+    @FXML
+    private MenuItem miEdit;
+    @FXML
+    private MenuItem miDel;
+    @FXML
+    private MenuItem miAbout;
     private ObservableList<Ansprechpartner> ansprechpartnerList;
     private ObservableList<Organisation> organisationList;
-
+    private Ansprechpartner selectedAP;
+    private Organisation selectedOrg;
+    private boolean isOrg;
 
     private Main mainApp;
 
@@ -41,36 +57,35 @@ public class AnsprechpartneranzeigeController {
     public void initialize() {
         //TODO: Auswahlhandler
 
-        tv_AP.getSelectionModel().selectedItemProperty()
-                .addListener(new ChangeListener<TreeItem<String>>() {
-
-                    @Override
-                    public void changed(
-                            ObservableValue<? extends TreeItem<String>> observable,
-                            TreeItem<String> old_val, TreeItem<String> new_val) {
-                        for (Organisation o : organisationList) {
-                            if (o.getName().equals(new_val.getValue())) {
-
-                                lblAPname.setText("");
-                                lblAPmail.setText("");
-                                lblAPtel.setText("");
-                                lblAPorg.setText(new_val.getValue());
-                                lblAPansch.setText(o.getPlz() + " " + o.getOrt() + "\n" + o.getStrasse());
-                            } else {
-                                for (Ansprechpartner a : ansprechpartnerList) {
-                                    String cache = a.getName() + ", " + a.getVorname();
-                                    if (cache.equals(new_val.getValue())) {
-                                        lblAPname.setText(new_val.getValue());
-                                        lblAPmail.setText(a.getEmail());
-                                        lblAPtel.setText(a.getTelefon());
-                                        lblAPorg.setText(a.getUnternehmen().getName());
-                                        lblAPansch.setText(a.getUnternehmen().getPlz() + " " + a.getUnternehmen().getOrt() + "\n" + a.getUnternehmen().getStrasse());
-                                    }
-                                }
-                            }
-                        }
+       tv_AP.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Object>>() {
+           @Override
+           public void changed(ObservableValue<? extends TreeItem<Object>> observable, TreeItem<Object> oldValue, TreeItem<Object> newValue) {
+                    if (handelDelete())
+                    {
+                        tv_AP.getSelectionModel().clearSelection();
                     }
-                });
+                  else if (newValue.getValue() instanceof Organisation ){
+                               selectedOrg =(Organisation) newValue.getValue();
+                               isOrg = true;
+                               lblAPname.setText("");
+                               lblAPmail.setText("");
+                               lblAPtel.setText("");
+                               lblAPorg.setText(selectedOrg.getName());
+                               lblAPansch.setText(selectedOrg.getPlz() + " " + selectedOrg.getOrt() + "\n" + selectedOrg.getStrasse());
+
+                   }else   if (newValue.getValue() instanceof Ansprechpartner ){
+                       selectedAP = (Ansprechpartner) newValue.getValue();
+                       isOrg = false;
+                       lblAPname.setText(selectedAP.getName() + ", " + selectedAP.getVorname());
+                       lblAPmail.setText(selectedAP.getEmail());
+                       lblAPtel.setText(selectedAP.getTelefon());
+                       lblAPorg.setText(selectedAP.getUnternehmen().getName());
+                       lblAPansch.setText(selectedAP.getUnternehmen().getPlz() + " " + selectedAP.getUnternehmen().getOrt() + "\n" + selectedAP.getUnternehmen().getStrasse());
+                   }
+
+           }
+       });
+
     }
 
     // loads some strings into the tree in the application UI.
@@ -83,7 +98,6 @@ public class AnsprechpartneranzeigeController {
         rootItem.getChildren().addAll(unternehmen);
         tv_AP.setShowRoot(false);
         tv_AP.setRoot(rootItem);
-
     }
 
     public void setMainApp(Main mainApp) {
@@ -98,18 +112,74 @@ public class AnsprechpartneranzeigeController {
 
     @FXML
     public void handleNewOrg() {
-        if(this.mainApp.showNewOrg(this.organisationList))
-        {
+        if (this.mainApp.showNewOrg(this.organisationList)) {
             loadTreeItems();
         }
-
     }
 
     @FXML
     public void handleNewAnsprechpartner() {
-        if (this.mainApp.showNewAnsp(this.organisationList))
-        {
+        if (this.mainApp.showNewAnsp(this.organisationList)) {
             loadTreeItems();
         }
+    }
+
+    @FXML
+    public boolean handelDelete() {
+        boolean found = false;
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Look, a Confirmation Dialog");
+        alert.setContentText("Are you ok with this?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+
+            while (!found) {
+                if (isOrg) {
+                    for (Organisation o : organisationList) {
+                        if (o.equals(selectedOrg)) {
+                            organisationList.remove(o);
+                            loadTreeItems();
+                            found= true;
+                            break;
+                        }
+                    }
+                } else for (Ansprechpartner a : ansprechpartnerList) {
+                    if (a.equals(selectedAP)) {
+                        ansprechpartnerList.remove(a);
+                        loadTreeItems();
+                        found= true;
+                        break;
+                    }
+                }
+            }
+        }
+        return found;
+    }
+
+    private void editOrg(Organisation org) {
+
+    }
+
+
+    private void editAp(Ansprechpartner ap) {
+
+    }
+
+    @FXML
+    public void handleEdit() {
+        if (isOrg) {
+            for (Organisation o : organisationList) {
+                if (o.equals(selectedOrg)) {
+                    editOrg(o);
+                }
+            }
+        } else for (Ansprechpartner a : ansprechpartnerList) {
+            if (a.equals(selectedAP)) {
+                editAp(a);
+            }
+        }
+
     }
 }

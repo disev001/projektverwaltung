@@ -26,6 +26,7 @@ public class OrganisationAnlegenController {
     private Button btnOK;
     @FXML
     private Button btnCancel;
+
     private ObservableList<Organisation> organisationList;
     private Stage dialogStage;
     private boolean okClicked = false;

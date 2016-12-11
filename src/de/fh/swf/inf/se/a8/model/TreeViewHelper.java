@@ -15,26 +15,24 @@ public class TreeViewHelper {
         this.ansp = a;
     }
 
-    // This method creates an ArrayList of TreeItems (Products)
     public ArrayList<TreeItem> getUnternehmen() {
         ArrayList<TreeItem> unternehmen = new ArrayList<TreeItem>();
         for (Organisation u : org) {
-            TreeItem unternehmenItem = new TreeItem(u.getName());
+            TreeItem unternehmenItem = new TreeItem(u);
 
-                unternehmenItem.getChildren().addAll(getAnsprechpartner(u.getName()));
+            unternehmenItem.getChildren().addAll(getAnsprechpartner(u.getName()));
 
             unternehmen.add(unternehmenItem);
         }
         return unternehmen;
     }
 
-    // This method creates an ArrayList of TreeItems (Cars)
     private ArrayList<TreeItem> getAnsprechpartner(String unternehmensname) {
         ArrayList<TreeItem> ansprechpartner = new ArrayList<TreeItem>();
 
         for (Ansprechpartner a : ansp) {
             if (a.getUnternehmen().getName().equals(unternehmensname))
-                ansprechpartner.add(new TreeItem(a.getName()+", "+a.getVorname()));
+                ansprechpartner.add(new TreeItem(a));
         }
         return ansprechpartner;
     }
