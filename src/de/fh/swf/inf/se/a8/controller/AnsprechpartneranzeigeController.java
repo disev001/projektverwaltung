@@ -107,6 +107,9 @@ public class AnsprechpartneranzeigeController {
 
     @FXML
     public void handleNewAnsprechpartner() {
-        this.mainApp.showNewAnsp(this.organisationList);
+        if (this.mainApp.showNewAnsp(this.organisationList))
+        {
+            loadTreeItems();
+        }
     }
 }

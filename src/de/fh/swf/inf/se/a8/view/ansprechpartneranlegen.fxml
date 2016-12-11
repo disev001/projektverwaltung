@@ -22,6 +22,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
@@ -29,42 +30,48 @@
                 <Label text="Vorname" />
                 <Label text="Nachname" GridPane.rowIndex="1" />
                 <Label text="Telefon:" GridPane.rowIndex="2" />
-                <Label text="Unternehmen" GridPane.rowIndex="3" />
-                <TextField GridPane.columnIndex="1">
+                <Label text="Unternehmen" GridPane.rowIndex="4" />
+                <TextField fx:id="txtVname" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets left="10.0" />
                     </GridPane.margin>
                 </TextField>
-                <TextField GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <TextField fx:id="txtNname" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <GridPane.margin>
                         <Insets left="10.0" />
                     </GridPane.margin>
                 </TextField>
-                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <TextField fx:id="txtTel" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <GridPane.margin>
                         <Insets left="10.0" />
                     </GridPane.margin>
                 </TextField>
-                <Button mnemonicParsing="false" text="OK" GridPane.rowIndex="4">
+                <Button fx:id="btnOK" mnemonicParsing="false" onAction="#handleOK" text="OK" GridPane.rowIndex="5">
                     <GridPane.margin>
                         <Insets left="20.0" />
                     </GridPane.margin>
                 </Button>
-                <Button mnemonicParsing="false" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="5">
                     <GridPane.margin>
                         <Insets left="20.0" />
                     </GridPane.margin>
                 </Button>
-            <Button fx:id="btn_addOrg" mnemonicParsing="false" onAction="#handleNewOrg" text="+" GridPane.columnIndex="2" GridPane.rowIndex="3">
+            <Button fx:id="btn_addOrg" mnemonicParsing="false" onAction="#handleNewOrg" text="+" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets left="5.0" />
                </GridPane.margin>
             </Button>
-            <ComboBox fx:id="cb_Org" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <ComboBox fx:id="cb_Org" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </ComboBox>
+            <Label text="Email:" GridPane.rowIndex="3" />
+            <TextField fx:id="txtMail" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </TextField>
             </children>
             <padding>
                 <Insets left="10.0" right="10.0" top="10.0" />
