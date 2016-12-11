@@ -100,6 +100,7 @@ public class Main extends Application {
             dialogStage.setScene(scene);
             OrganisationAnlegenController controller= loader.getController();
             controller.setMainApp(this);
+            controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {
@@ -126,6 +127,7 @@ public class Main extends Application {
             dialogStage.setScene(scene);
             AnsprechpartnerAnlegenController controller= loader.getController();
             controller.setMainApp(this);
+
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {

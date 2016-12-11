@@ -47,13 +47,13 @@
                               </Label>
                               <Label text="Anschrift:" GridPane.rowIndex="4" />
                               <Label text="Name:" />
-                              <Label fx:id="lblAPname" text="Label" GridPane.columnIndex="1" />
+                              <Label fx:id="lblAPname" GridPane.columnIndex="1" />
                               <Label text="Email:" GridPane.rowIndex="1" />
                               <Label text="Telefon:" GridPane.rowIndex="2" />
-                              <Label fx:id="lblAPmail" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label fx:id="lblAPtel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label fx:id="lblAPorg" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label fx:id="lblAPansch" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="lblAPmail" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="lblAPtel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="lblAPorg" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="lblAPansch" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                            </children>
                            <padding>
                               <Insets left="20.0" top="20.0" />

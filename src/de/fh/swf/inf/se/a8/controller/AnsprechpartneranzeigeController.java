@@ -98,7 +98,11 @@ public class AnsprechpartneranzeigeController {
 
     @FXML
     public void handleNewOrg() {
-        this.mainApp.showNewOrg(this.organisationList);
+        if(this.mainApp.showNewOrg(this.organisationList))
+        {
+            loadTreeItems();
+        }
+
     }
 
     @FXML
