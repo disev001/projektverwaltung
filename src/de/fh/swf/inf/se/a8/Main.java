@@ -1,8 +1,6 @@
 package de.fh.swf.inf.se.a8;
 
-import de.fh.swf.inf.se.a8.controller.AnsprechpartnerAnlegenController;
-import de.fh.swf.inf.se.a8.controller.AnsprechpartneranzeigeController;
-import de.fh.swf.inf.se.a8.controller.OrganisationAnlegenController;
+import de.fh.swf.inf.se.a8.controller.*;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
 import de.fh.swf.inf.se.a8.model.Projekt;
@@ -83,11 +81,10 @@ public class Main extends Application {
     }
     /**
      * Laden der Stage für Unternehmen anlegen Dialogfenster
-     * @param list aktuelle unternehmen
      *
      * @return reaktion auf die art des fenster schließens
      */
-    public boolean showNewOrg(ObservableList<Organisation> list) {
+    public boolean showNewOrg() {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/organisationanlegen.fxml"));
@@ -101,6 +98,56 @@ public class Main extends Application {
             OrganisationAnlegenController controller= loader.getController();
             controller.setMainApp(this);
             controller.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    /**
+     * Laden der Stage für Unternehmen editieren Dialogfenster
+     * @param o aktuelle unternehmen
+     *
+     * @return reaktion auf die art des fenster schließens
+     */
+    public boolean showEditOrg(Organisation o) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/orgEditWindow.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ansprechpartner anlegen");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            OrganisationEditierenController controller = loader.getController();
+            controller.setMainApp(this);
+            controller.setDialogStage(dialogStage);
+            controller.setOrg(o);
+            dialogStage.showAndWait();
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean showEditAnsp(Ansprechpartner a) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/anspEditWindow.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ansprechpartner Editieren");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            AnsprechpartnerEditierenController controller = loader.getController();
+            controller.setMainApp(this);
+            controller.setDialogStage(dialogStage);
+            controller.setAnsprechpartner(a);
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {
