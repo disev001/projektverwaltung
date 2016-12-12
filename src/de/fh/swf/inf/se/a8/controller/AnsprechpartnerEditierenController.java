@@ -9,9 +9,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Created by dsee on 10.12.2016.
@@ -76,14 +82,17 @@ public class AnsprechpartnerEditierenController {
             organisationAuswahl.add(o.getName());
         }
         cb_Org.setItems(organisationAuswahl);
-
     }
 
     @FXML
     public void handleOK() {
         try {
+            ansprechpartner.setName(txtNname.getText());
+            ansprechpartner.setVorname(txtVname.getText());
+            ansprechpartner.setTelefon(txtTel.getText());
+            ansprechpartner.setEmail(txtMail.getText());
 
-            okClicked = true;
+            ansprechpartner.setUnternehmen(org);
         } catch (Exception e) {
             new InfoWindows("FEHLER", null, "SO NICHT!");
         }
@@ -95,7 +104,31 @@ public class AnsprechpartnerEditierenController {
         okClicked = false;
         dialogStage.close();
     }
+    @FXML
+    public boolean handleNewOrg() {
 
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/organisationanlegen.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ogranisation anlegen");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(this.dialogStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            OrganisationAnlegenController controller= loader.getController();
+            controller.setMainApp(mainApp);
+            controller.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
+            setListe();
+            return controller.isOkClicked();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public void setAnsprechpartner(Ansprechpartner ansprechpartner) {
         setListe();
         this.ansprechpartner = ansprechpartner;
@@ -103,7 +136,6 @@ public class AnsprechpartnerEditierenController {
         txtNname.setText(ansprechpartner.getName());
         txtMail.setText(ansprechpartner.getEmail());
         txtTel.setText(ansprechpartner.getTelefon());
-        //TODO: Auswahl der Organisation beim Laden vom editor
-
+        cb_Org.getSelectionModel().select(ansprechpartner.getUnternehmen().getName());
     }
 }
