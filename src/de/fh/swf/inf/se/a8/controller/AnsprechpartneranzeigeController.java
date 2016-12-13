@@ -7,11 +7,13 @@ import de.fh.swf.inf.se.a8.model.TreeViewHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -60,24 +62,29 @@ public class AnsprechpartneranzeigeController {
         tv_AP.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Object>>() {
             @Override
             public void changed(ObservableValue<? extends TreeItem<Object>> observable, TreeItem<Object> oldValue, TreeItem<Object> newValue) {
+                try {
 
-                if (newValue.getValue() instanceof Organisation) {
-                    selectedOrg = (Organisation) newValue.getValue();
-                    isOrg = true;
-                    lblAPname.setText("");
-                    lblAPmail.setText("");
-                    lblAPtel.setText("");
-                    lblAPorg.setText(selectedOrg.getName());
-                    lblAPansch.setText(selectedOrg.getPlz() + " " + selectedOrg.getOrt() + "\n" + selectedOrg.getStrasse());
 
-                } else if (newValue.getValue() instanceof Ansprechpartner) {
-                    selectedAP = (Ansprechpartner) newValue.getValue();
-                    isOrg = false;
-                    lblAPname.setText(selectedAP.getName() + ", " + selectedAP.getVorname());
-                    lblAPmail.setText(selectedAP.getEmail());
-                    lblAPtel.setText(selectedAP.getTelefon());
-                    lblAPorg.setText(selectedAP.getUnternehmen().getName());
-                    lblAPansch.setText(selectedAP.getUnternehmen().getPlz() + " " + selectedAP.getUnternehmen().getOrt() + "\n" + selectedAP.getUnternehmen().getStrasse());
+                    if (newValue.getValue() instanceof Organisation) {
+                        selectedOrg = (Organisation) newValue.getValue();
+                        isOrg = true;
+                        lblAPname.setText("");
+                        lblAPmail.setText("");
+                        lblAPtel.setText("");
+                        lblAPorg.setText(selectedOrg.getName());
+                        lblAPansch.setText(selectedOrg.getPlz() + " " + selectedOrg.getOrt() + "\n" + selectedOrg.getStrasse());
+
+                    } else if (newValue.getValue() instanceof Ansprechpartner) {
+                        selectedAP = (Ansprechpartner) newValue.getValue();
+                        isOrg = false;
+                        lblAPname.setText(selectedAP.getName() + ", " + selectedAP.getVorname());
+                        lblAPmail.setText(selectedAP.getEmail());
+                        lblAPtel.setText(selectedAP.getTelefon());
+                        lblAPorg.setText(selectedAP.getUnternehmen().getName());
+                        lblAPansch.setText(selectedAP.getUnternehmen().getPlz() + " " + selectedAP.getUnternehmen().getOrt() + "\n" + selectedAP.getUnternehmen().getStrasse());
+                    }
+                } catch (Exception e) {
+                    ;
                 }
             }
         });
@@ -135,6 +142,13 @@ public class AnsprechpartneranzeigeController {
                 if (isOrg) {
                     for (Organisation o : organisationList) {
                         if (o.equals(selectedOrg)) {
+                            for (Ansprechpartner a : ansprechpartnerList) {
+                                if (a.getUnternehmen().equals(o)) {
+                                    ansprechpartnerList.remove(a);
+                                break;
+                                }
+
+                            }
                             organisationList.remove(o);
                             loadTreeItems();
                             found = true;
@@ -172,10 +186,10 @@ public class AnsprechpartneranzeigeController {
     }
 
     @FXML
-    public  void  handleSave(){
+    public void handleSave() {
         DBcontroller db = new DBcontroller();
         db.trunkTable();
         db.fillOrgTable(this.organisationList);
-        db.fillAnspTable(this.ansprechpartnerList,this.organisationList);
+        db.fillAnspTable(this.ansprechpartnerList, this.organisationList);
     }
 }
