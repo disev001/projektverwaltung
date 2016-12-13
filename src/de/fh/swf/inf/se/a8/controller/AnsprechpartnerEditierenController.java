@@ -74,6 +74,9 @@ public class AnsprechpartnerEditierenController {
         this.dialogStage = dialogStage;
     }
 
+    /**
+     * Setze verfügbare Organisationen in die Liste zur auswahl
+     */
     public void setListe() {
         ObservableList<String> organisationAuswahl = FXCollections.observableArrayList();
         this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
@@ -84,6 +87,9 @@ public class AnsprechpartnerEditierenController {
         cb_Org.setItems(organisationAuswahl);
     }
 
+    /**
+     * Versuche das setzen der neuen werte für das editierte Objekt
+     */
     @FXML
     public void handleOK() {
         try {
@@ -91,12 +97,12 @@ public class AnsprechpartnerEditierenController {
             ansprechpartner.setVorname(txtVname.getText());
             ansprechpartner.setTelefon(txtTel.getText());
             ansprechpartner.setEmail(txtMail.getText());
-
             ansprechpartner.setUnternehmen(org);
+            dialogStage.close();
         } catch (Exception e) {
-            new InfoWindows("FEHLER", null, "SO NICHT!");
+            new InfoWindows("FEHLER", null, "Ungültige Parameter für einen Ansprechpartner");
         }
-        dialogStage.close();
+
     }
 
     @FXML
@@ -105,6 +111,10 @@ public class AnsprechpartnerEditierenController {
         dialogStage.close();
     }
     @FXML
+
+    /**
+     * Hinzufügen von Organisationen während des Editierens
+     */
     public boolean handleNewOrg() {
 
         try {
@@ -129,6 +139,11 @@ public class AnsprechpartnerEditierenController {
             return false;
         }
     }
+
+    /**
+     * Setze Aktuelle Werte in die TextEdit boxen
+     * @param ansprechpartner
+     */
     public void setAnsprechpartner(Ansprechpartner ansprechpartner) {
         setListe();
         this.ansprechpartner = ansprechpartner;

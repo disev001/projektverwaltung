@@ -47,6 +47,7 @@ public class AnsprechpartnerAnlegenController {
      */
     @FXML
     private void initialize() {
+        //Reaktion auf die Organisationsauswahl
         cb_Org.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -67,9 +68,14 @@ public class AnsprechpartnerAnlegenController {
         this.mainApp = mainApp;
         setListe();
     }
+
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
+
+    /**
+     *Füllen der Organisationsauswahl
+     */
     public void setListe() {
         ObservableList<String> organisationAuswahl = FXCollections.observableArrayList();
         this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
@@ -79,16 +85,25 @@ public class AnsprechpartnerAnlegenController {
         }
         cb_Org.setItems(organisationAuswahl);
     }
+
+    /**
+     * Versuch der Bestätigung der Eingaben
+     */
     @FXML
     public void handleOK(){
         try {
             ansprechpartnerList.add(new Ansprechpartner(txtNname.getText(), txtVname.getText(), txtMail.getText(), txtTel.getText(),org));
             okClicked=true;
+            dialogStage.close();
         } catch (Exception e) {
-            new InfoWindows("FEHLER", null, "SO NICHT!");
+            new InfoWindows("FEHLER", "Ungültige Parameter für einen Ansprechpartner", "Ungültige Parameter für einen Ansprechpartner\nBitte überprüfen Sie ihre eingaben");
         }
-        dialogStage.close();
     }
+
+    /**
+     *  Anlegen von Neuen organisation während Anlegen von AP
+     * @return Bestätigunsart
+     */
     @FXML
     public boolean handleNewOrg() {
 
@@ -114,6 +129,10 @@ public class AnsprechpartnerAnlegenController {
             return false;
         }
     }
+
+    /**
+     * Abbruch ohne bestätigung
+     */
     @FXML
     private void handleCancel() {
         okClicked = false;

@@ -4,10 +4,14 @@ import de.fh.swf.inf.se.a8.Main;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
 import de.fh.swf.inf.se.a8.view.InfoWindows;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+
+import java.util.IllegalFormatWidthException;
 
 
 /**
@@ -34,6 +38,27 @@ public class OrganisationEditierenController {
     private boolean okClicked = false;
     private Main mainApp;
 
+    /**
+     * initialisiert handler der Stage
+     */
+    @FXML
+    public void initialize() {
+       //Überwache eingabe der PLZ
+        txtPLZ.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                try {
+                    Integer.parseInt(newValue);
+                    if (newValue.length() > 5) {
+                        throw new IllegalFormatWidthException(5);
+                    }
+                } catch (Exception e) {
+                    txtPLZ.setText(oldValue);
+                }
+            }
+        });
+    }
+
     public boolean isOkClicked() {
         return okClicked;
     }
@@ -43,6 +68,10 @@ public class OrganisationEditierenController {
         setListe();
     }
 
+    /**
+     * Setze TextEdit boxen mit Inhalt der zu editierenden Orga
+     * @param o
+     */
     public void setOrg(Organisation o) {
         editOrg = o;
         txtOrg.setText(o.getName());
@@ -69,7 +98,7 @@ public class OrganisationEditierenController {
             editOrg.setStrasse(txtStreet.getText());
 
         } catch (Exception e) {
-            new InfoWindows("FEHLER", null, "SO NICHT!");
+            new InfoWindows("FEHLER", null, "Ungültige Parameter für eine Organisation");
         }
         dialogStage.close();
     }

@@ -21,13 +21,13 @@ public class Main extends Application {
     private AnchorPane rootLayout;
     private Stage primaryStage;
     public ObservableList<Ansprechpartner> ansprechpartners = FXCollections.observableArrayList();
-
     public ObservableList<Organisation> organisations = FXCollections.observableArrayList();
 
 
-    public void main(){
+    public void main() {
 
     }
+
     /**
      * Laden der Oberfläche, der Controller und weiteren Initialisierungsdaten
      *
@@ -38,23 +38,11 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Pruefungsverwaltung");
 
-        //TODO: Gehört hier nicht rein!
-     /*   Organisation org1 = new Organisation("Musterorg", 58762, "Altena", "Amselweg 6a");
-        Organisation org2 = new Organisation("FHSWF", 55442, "Iserlohn", "Frauenstuhlweg 31");
-        Ansprechpartner an1 = new Ansprechpartner("Katze", "Wasilisa", "dsee@doldrums.de", "02352/546521", org1);
-        Ansprechpartner an2 = new Ansprechpartner("Klug", "Uwe", "klug.uwe@fh-swf.de", "02242/8087652", org1);
-        Ansprechpartner an3 = new Ansprechpartner("Klug", "Uwe", "klug.uwe@fh-swf.de", "02242/8087652", org2);
-        organisations.addAll(org1,org2);
-        ansprechpartners.addAll(an1,an2,an3);
-*/
         DBcontroller db = new DBcontroller();
         db.connectDB();
         organisations = db.readOrgTable();
         ansprechpartners = db.readAnspTable(organisations);
-        //db.fillAnspTable(ansprechpartners,organisations);
         db.disconnectDB();
-
-        //
 
         try {
             // Load root layout from fxml file.
@@ -85,6 +73,7 @@ public class Main extends Application {
             }
         });
     }
+
     /**
      * Laden der Stage für Unternehmen anlegen Dialogfenster
      *
@@ -101,7 +90,7 @@ public class Main extends Application {
             dialogStage.initOwner(primaryStage);
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
-            OrganisationAnlegenController controller= loader.getController();
+            OrganisationAnlegenController controller = loader.getController();
             controller.setMainApp(this);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
@@ -111,10 +100,11 @@ public class Main extends Application {
             return false;
         }
     }
+
     /**
      * Laden der Stage für Unternehmen editieren Dialogfenster
-     * @param o aktuelle unternehmen
      *
+     * @param o aktuelle unternehmen
      * @return reaktion auf die art des fenster schließens
      */
     public boolean showEditOrg(Organisation o) {
@@ -139,6 +129,12 @@ public class Main extends Application {
             return false;
         }
     }
+    /**
+     * Laden der Stage für Ansprechpartner editieren Dialogfenster
+     *
+     * @param a aktueller Ansprechpartner
+     * @return reaktion auf die art des fenster schließens
+     */
     public boolean showEditAnsp(Ansprechpartner a) {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -161,10 +157,11 @@ public class Main extends Application {
             return false;
         }
     }
+
     /**
      * Laden der Stage für Unternehmen anlegen Dialogfenster
-     * @param list aktuelle unternehmen
      *
+     * @param list aktuelle unternehmen
      * @return reaktion auf die art des fenster schließens
      */
     public boolean showNewAnsp(ObservableList<Organisation> list) {
@@ -178,7 +175,7 @@ public class Main extends Application {
             dialogStage.initOwner(primaryStage);
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
-            AnsprechpartnerAnlegenController controller= loader.getController();
+            AnsprechpartnerAnlegenController controller = loader.getController();
             controller.setMainApp(this);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
@@ -188,6 +185,7 @@ public class Main extends Application {
             return false;
         }
     }
+
     //Übergabe an fremde Klassen um damit zu interagieren
     public ObservableList<Ansprechpartner> getAnsprechpartners() {
         return ansprechpartners;
@@ -200,5 +198,10 @@ public class Main extends Application {
     //Übergabe der Stage an fremde Klassen um damit zu interagieren
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    //Schließe per MenuItem
+    public void closeApp() {
+        System.exit(0);
     }
 }

@@ -18,29 +18,9 @@ public class DBcontroller {
     private Connection connection = null;
     Statement st = null;
 
-    public static void main(String[] args) {
-        DBcontroller db = new DBcontroller();
-        db.connectDB();
-        // db.readOrgTable();
-        db.disconnectDB();
-    }
-
-    /**********************************************************************************/
-    public void testConnection() {
-        try {
-            connectDB();
-        } catch (Exception e) {
-            System.out.println(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                    System.out.println("Database connection terminated");
-                } catch (Exception e) { /* ignore close errors */ }
-            }
-        }
-    }
-
+    /**
+     * Verbinde zu DB
+     */
     public void connectDB() {
 
         try {
@@ -56,6 +36,9 @@ public class DBcontroller {
         }
     }
 
+    /**
+     * Trenne von DB
+     */
     public void disconnectDB() {
         if (connection != null) {
             try {
@@ -66,6 +49,10 @@ public class DBcontroller {
         }
     }
 
+    /**
+     *  Lese Tabelle organisation
+     * @return Liste der ausgelesenen Tabelleneinträge für Organisationen
+     */
     public ObservableList<Organisation> readOrgTable() {
         ObservableList<Organisation> orgList = FXCollections.observableArrayList();
 
@@ -88,7 +75,10 @@ public class DBcontroller {
         }
         return null;
     }
-
+    /**
+     *  Lese Tabelle ansprechpartner
+     * @return Liste der ausgelesenen Tabelleneinträge für ansprechpartner
+     */
     public ObservableList<Ansprechpartner> readAnspTable(ObservableList<Organisation> orgList) {
         ObservableList<Ansprechpartner> anspList = FXCollections.observableArrayList();
 
@@ -114,6 +104,11 @@ public class DBcontroller {
         return null;
     }
 
+    /**
+     * Fülle Tabelle organisation mit Listeninhalt
+     * @param organisationList Liste mit aktuellen Organisationen
+     * @return erfolgs bool
+     */
     public boolean fillOrgTable(ObservableList<Organisation> organisationList) {
         try {
             for (Organisation o : organisationList) {
@@ -130,7 +125,11 @@ public class DBcontroller {
             return false;
         }
     }
-
+    /**
+     * Fülle Tabelle Ansprechpartner mit Listeninhalt
+     * @param organisationList Liste mit aktuellen Ansprechpartner
+     * @return erfolgs bool
+     */
     public boolean fillAnspTable(ObservableList<Ansprechpartner> ansprechpartnerList, ObservableList<Organisation> organisationList) {
         try {
 
@@ -150,6 +149,9 @@ public class DBcontroller {
         }
     }
 
+    /**
+     * Lösche von Tabellen vor dem Speichern
+     */
     public void trunkTable() {
         try {
             connection = null;
@@ -162,12 +164,8 @@ public class DBcontroller {
             String sql = "TRUNCATE  TABLE ansprechpartner";
 
             st.executeUpdate(sql);
-            System.out.println("\nAnsprechpartner leer");
-
             sql = "TRUNCATE  TABLE organisation";
-
             st.executeUpdate(sql);
-            System.out.println("\nOrganisation leer");
         } catch (Exception e) {
             System.out.println(e);
         }

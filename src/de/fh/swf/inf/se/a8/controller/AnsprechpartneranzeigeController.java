@@ -4,13 +4,17 @@ import de.fh.swf.inf.se.a8.Main;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
 import de.fh.swf.inf.se.a8.model.TreeViewHelper;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -54,7 +58,9 @@ public class AnsprechpartneranzeigeController {
 
     private Main mainApp;
 
-    // the initialize method is automatically invoked by the FXMLLoader - it's magic
+    /**
+     * initialisiert handler der Stage
+     */
     @FXML
     public void initialize() {
         //TODO: Auswahlhandler
@@ -88,11 +94,12 @@ public class AnsprechpartneranzeigeController {
                 }
             }
         });
-
     }
 
-    // loads some strings into the tree in the application UI.
-
+    /**
+     * Lade der Listeninhalte in TreeItems und setzte sie in TreeView
+     * wird nach jeder änderung an listen aufgerufen
+     */
     public void loadTreeItems() {
         TreeViewHelper helper = new TreeViewHelper(ansprechpartnerList, organisationList);
         ArrayList<TreeItem> unternehmen = helper.getUnternehmen();
@@ -113,6 +120,7 @@ public class AnsprechpartneranzeigeController {
         this.organisationList = this.mainApp.getOrganisations();
     }
 
+
     @FXML
     public void handleNewOrg() {
         if (this.mainApp.showNewOrg()) {
@@ -127,14 +135,22 @@ public class AnsprechpartneranzeigeController {
         }
     }
 
+    /**
+     *  Löschen der Aktuellen TreeView auswahl
+     * @return erfolgs bool
+     */
     @FXML
     public boolean handelDelete() {
         boolean found = false;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Look, a Confirmation Dialog");
-        alert.setContentText("Are you ok with this?");
-
+        alert.setTitle("Löschen");
+        if(isOrg){
+        alert.setHeaderText("Lösche Organisation");
+        alert.setContentText("Lösche  Organisation "+selectedOrg.getName()+" und alle zugehörigen Ansprechpartner?");}
+        else {
+            alert.setHeaderText("Lösche  Ansprechpartner");
+            alert.setContentText("Lösche  Ansprechpartner " + selectedAP.getName() + ", " + selectedAP.getVorname() + " und alle zugehörigen Ansprechpartner?");
+        }
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
 
@@ -147,7 +163,6 @@ public class AnsprechpartneranzeigeController {
                                     ansprechpartnerList.remove(a);
                                 break;
                                 }
-
                             }
                             organisationList.remove(o);
                             loadTreeItems();
@@ -168,6 +183,9 @@ public class AnsprechpartneranzeigeController {
         return found;
     }
 
+    /**
+     * Editieren der aktuellen TreeView auswahl
+     */
     @FXML
     public void handleEdit() {
         if (isOrg) {
@@ -185,11 +203,19 @@ public class AnsprechpartneranzeigeController {
         }
     }
 
+    /**
+     * Leere aktuelle Tabelle und persistiere die aktuellen Listeninhalte
+     */
     @FXML
     public void handleSave() {
         DBcontroller db = new DBcontroller();
         db.trunkTable();
         db.fillOrgTable(this.organisationList);
         db.fillAnspTable(this.ansprechpartnerList, this.organisationList);
+    }
+
+    @FXML
+    private void handleCancel() {
+      mainApp.closeApp();
     }
 }
