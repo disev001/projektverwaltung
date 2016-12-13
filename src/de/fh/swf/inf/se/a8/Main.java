@@ -3,8 +3,6 @@ package de.fh.swf.inf.se.a8;
 import de.fh.swf.inf.se.a8.controller.*;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
-import de.fh.swf.inf.se.a8.model.Projekt;
-import de.fh.swf.inf.se.a8.model.Student;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -41,13 +39,21 @@ public class Main extends Application {
         this.primaryStage.setTitle("Pruefungsverwaltung");
 
         //TODO: Gehört hier nicht rein!
-        Organisation org1 = new Organisation("Musterorg", 58762, "Altena", "Amselweg 6a");
+     /*   Organisation org1 = new Organisation("Musterorg", 58762, "Altena", "Amselweg 6a");
         Organisation org2 = new Organisation("FHSWF", 55442, "Iserlohn", "Frauenstuhlweg 31");
-
         Ansprechpartner an1 = new Ansprechpartner("Katze", "Wasilisa", "dsee@doldrums.de", "02352/546521", org1);
         Ansprechpartner an2 = new Ansprechpartner("Klug", "Uwe", "klug.uwe@fh-swf.de", "02242/8087652", org1);
-        ansprechpartners.addAll(an1,an2);
+        Ansprechpartner an3 = new Ansprechpartner("Klug", "Uwe", "klug.uwe@fh-swf.de", "02242/8087652", org2);
         organisations.addAll(org1,org2);
+        ansprechpartners.addAll(an1,an2,an3);
+*/
+        DBcontroller db = new DBcontroller();
+        db.connectDB();
+        organisations = db.readOrgTable();
+        ansprechpartners = db.readAnspTable(organisations);
+        //db.fillAnspTable(ansprechpartners,organisations);
+        db.disconnectDB();
+
         //
 
         try {

@@ -170,4 +170,12 @@ public class AnsprechpartneranzeigeController {
             loadTreeItems();
         }
     }
+
+    @FXML
+    public  void  handleSave(){
+        DBcontroller db = new DBcontroller();
+        db.trunkTable();
+        db.fillOrgTable(this.organisationList);
+        db.fillAnspTable(this.ansprechpartnerList,this.organisationList);
+    }
 }
