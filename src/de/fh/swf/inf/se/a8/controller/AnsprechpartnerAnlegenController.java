@@ -18,6 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.IllegalFormatException;
 
 /**
  * Created by dsee on 10.12.2016.
@@ -51,7 +52,7 @@ public class AnsprechpartnerAnlegenController {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 for (Organisation o : organisationList) {
-                    if(o.getName().equals(newValue)){
+                    if (o.getName().equals(newValue)) {
                         org = o;
                     }
                 }
@@ -73,14 +74,14 @@ public class AnsprechpartnerAnlegenController {
     }
 
     /**
-     *Füllen der Organisationsauswahl
+     * Füllen der Organisationsauswahl
      */
     public void setListe() {
         ObservableList<String> organisationAuswahl = FXCollections.observableArrayList();
         this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
         this.organisationList = this.mainApp.getOrganisations();
         for (Organisation o : organisationList) {
-          organisationAuswahl.add(o.getName());
+            organisationAuswahl.add(o.getName());
         }
         cb_Org.setItems(organisationAuswahl);
     }
@@ -89,18 +90,28 @@ public class AnsprechpartnerAnlegenController {
      * Versuch der Bestätigung der Eingaben
      */
     @FXML
-    public void handleOK(){
+    public void handleOK() {
         try {
-            ansprechpartnerList.add(new Ansprechpartner(txtNname.getText(), txtVname.getText(), txtMail.getText(), txtTel.getText(),org));
-            okClicked=true;
-            dialogStage.close();
-        } catch (Exception e) {
+
+            if (isValidEmailAddress(txtMail.getText()))
+            {
+                ansprechpartnerList.add(new Ansprechpartner(txtNname.getText(), txtVname.getText(), txtMail.getText(), txtTel.getText(), org));
+                okClicked = true;
+                dialogStage.close();
+            }
+            else throw new IllegalArgumentException();
+        } catch (IllegalArgumentException e)
+        {
+            new InfoWindows("FEHLER", "Ungültige Parameter für einen Ansprechpartner", "Ungültiges Format für Email");
+        }
+        catch (Exception e) {
             new InfoWindows("FEHLER", "Ungültige Parameter für einen Ansprechpartner", "Ungültige Parameter für einen Ansprechpartner\nBitte überprüfen Sie ihre eingaben");
         }
     }
 
     /**
-     *  Anlegen von Neuen organisation während Anlegen von AP
+     * Anlegen von Neuen organisation während Anlegen von AP
+     *
      * @return Bestätigunsart
      */
     @FXML
@@ -116,7 +127,7 @@ public class AnsprechpartnerAnlegenController {
             dialogStage.initOwner(this.dialogStage);
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
-            OrganisationAnlegenController controller= loader.getController();
+            OrganisationAnlegenController controller = loader.getController();
             controller.setMainApp(mainApp);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
@@ -127,6 +138,13 @@ public class AnsprechpartnerAnlegenController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
     }
 
     /**

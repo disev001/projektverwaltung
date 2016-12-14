@@ -4,20 +4,13 @@ import de.fh.swf.inf.se.a8.Main;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
 import de.fh.swf.inf.se.a8.model.TreeViewHelper;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -77,7 +70,11 @@ public class AnsprechpartneranzeigeController {
                         lblAPmail.setText("");
                         lblAPtel.setText("");
                         lblAPorg.setText(selectedOrg.getName());
-                        lblAPansch.setText(selectedOrg.getPlz() + " " + selectedOrg.getOrt() + "\n" + selectedOrg.getStrasse());
+                        String plz;
+                        if (selectedOrg.getPlz() == 0)
+                            plz = "";
+                        else plz = Integer.toString(selectedOrg.getPlz());
+                        lblAPansch.setText(plz + " " + selectedOrg.getOrt() + "\n" + selectedOrg.getStrasse());
 
                     } else if (newValue.getValue() instanceof Ansprechpartner) {
                         selectedAP = (Ansprechpartner) newValue.getValue();
@@ -86,7 +83,11 @@ public class AnsprechpartneranzeigeController {
                         lblAPmail.setText(selectedAP.getEmail());
                         lblAPtel.setText(selectedAP.getTelefon());
                         lblAPorg.setText(selectedAP.getUnternehmen().getName());
-                        lblAPansch.setText(selectedAP.getUnternehmen().getPlz() + " " + selectedAP.getUnternehmen().getOrt() + "\n" + selectedAP.getUnternehmen().getStrasse());
+                        String plz;
+                        if (selectedOrg.getPlz() == 0)
+                            plz = "";
+                        else plz = Integer.toString(selectedOrg.getPlz());
+                        lblAPansch.setText(plz + " " + selectedAP.getUnternehmen().getOrt() + "\n" + selectedAP.getUnternehmen().getStrasse());
                     }
                 } catch (Exception e) {
                     ;
@@ -135,7 +136,8 @@ public class AnsprechpartneranzeigeController {
     }
 
     /**
-     *  Löschen der Aktuellen TreeView auswahl
+     * Löschen der Aktuellen TreeView auswahl
+     *
      * @return erfolgs bool
      */
     @FXML
@@ -143,10 +145,10 @@ public class AnsprechpartneranzeigeController {
         boolean found = false;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Löschen");
-        if(isOrg){
-        alert.setHeaderText("Lösche Organisation");
-        alert.setContentText("Lösche  Organisation "+selectedOrg.getName()+" und alle zugehörigen Ansprechpartner?");}
-        else {
+        if (isOrg) {
+            alert.setHeaderText("Lösche Organisation");
+            alert.setContentText("Lösche  Organisation " + selectedOrg.getName() + " und alle zugehörigen Ansprechpartner?");
+        } else {
             alert.setHeaderText("Lösche  Ansprechpartner");
             alert.setContentText("Lösche  Ansprechpartner " + selectedAP.getName() + ", " + selectedAP.getVorname() + " und alle zugehörigen Ansprechpartner?");
         }
@@ -160,7 +162,7 @@ public class AnsprechpartneranzeigeController {
                             for (Ansprechpartner a : ansprechpartnerList) {
                                 if (a.getUnternehmen().equals(o)) {
                                     ansprechpartnerList.remove(a);
-                                break;
+                                    break;
                                 }
                             }
                             organisationList.remove(o);
@@ -215,6 +217,6 @@ public class AnsprechpartneranzeigeController {
 
     @FXML
     private void handleCancel() {
-      mainApp.closeApp();
+        mainApp.closeApp();
     }
 }

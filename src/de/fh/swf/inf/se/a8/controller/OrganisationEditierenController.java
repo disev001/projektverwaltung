@@ -48,7 +48,8 @@ public class OrganisationEditierenController {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 try {
-                    Integer.parseInt(newValue);
+                    if (newValue.length()>0)
+                        Integer.parseInt(newValue);
                     if (newValue.length() > 5) {
                         throw new IllegalFormatWidthException(5);
                     }
@@ -76,7 +77,9 @@ public class OrganisationEditierenController {
         editOrg = o;
         txtOrg.setText(o.getName());
         txtOrt.setText(o.getOrt());
+        if(o.getPlz() != 0)
         txtPLZ.setText(Integer.toString(o.getPlz()));
+
         txtStreet.setText(o.getStrasse());
     }
 
@@ -94,7 +97,9 @@ public class OrganisationEditierenController {
         try {
             editOrg.setName(txtOrg.getText());
             editOrg.setOrt(txtOrt.getText());
+            if(isValidPLZ())
             editOrg.setPlz(Integer.parseInt(txtPLZ.getText()));
+            else editOrg.setPlz(0);
             editOrg.setStrasse(txtStreet.getText());
 
         } catch (Exception e) {
@@ -103,6 +108,12 @@ public class OrganisationEditierenController {
         dialogStage.close();
     }
 
+    private boolean isValidPLZ() {
+        String ePattern = "^((?:0[1-46-9]\\d{3})|(?:[1-357-9]\\d{4})|(?:[4][0-24-9]\\d{3})|(?:[6][013-9]\\d{3}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(txtPLZ.getText().toString());
+        return m.matches();
+    }
     @FXML
     private void handleCancel() {
         okClicked = false;

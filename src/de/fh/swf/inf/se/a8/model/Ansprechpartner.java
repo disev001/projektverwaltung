@@ -58,6 +58,8 @@ public class Ansprechpartner {
      * @param email
      */
     public void setEmail(String email) {
+
+
         this.email = email;
     }
 

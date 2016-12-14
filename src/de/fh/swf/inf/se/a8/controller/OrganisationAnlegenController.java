@@ -7,7 +7,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.util.IllegalFormatWidthException;
@@ -49,6 +50,8 @@ public class OrganisationAnlegenController {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 try {
+
+
                     if (newValue.length() > 0)
                         Integer.parseInt(newValue);
                     if (newValue.length() > 5) {
@@ -82,12 +85,12 @@ public class OrganisationAnlegenController {
         okClicked = true;
         int plz;
         try {
-            if (txtOrg.getText().isEmpty()) {
-                plz = -1; // Für ungültige/Leere PLZ
-            } else{
-                plz =  Integer.parseInt(txtPLZ.getText());
+            if (!isValidPLZ()) {
+                plz = 0; // Für ungültige/Leere PLZ
+            } else {
+                plz = Integer.parseInt(txtPLZ.getText());
             }
-                organisationList.add(new Organisation(txtOrg.getText(),plz , txtOrt.getText(), txtStreet.getText()));
+            organisationList.add(new Organisation(txtOrg.getText(), plz, txtOrt.getText(), txtStreet.getText()));
         } catch (Exception e) {
             new InfoWindows("FEHLER", null, "Ungültige Parameter für eine Organisation");
         }
@@ -100,4 +103,12 @@ public class OrganisationAnlegenController {
         okClicked = false;
         dialogStage.close();
     }
+
+    private boolean isValidPLZ() {
+        String ePattern = "^((?:0[1-46-9]\\d{3})|(?:[1-357-9]\\d{4})|(?:[4][0-24-9]\\d{3})|(?:[6][013-9]\\d{3}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(txtPLZ.getText().toString());
+        return m.matches();
+    }
 }
+

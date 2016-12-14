@@ -92,13 +92,19 @@ public class AnsprechpartnerEditierenController {
     @FXML
     public void handleOK() {
         try {
+            if(isValidEmailAddress(txtMail.getText())){
             ansprechpartner.setName(txtNname.getText());
             ansprechpartner.setVorname(txtVname.getText());
             ansprechpartner.setTelefon(txtTel.getText());
             ansprechpartner.setEmail(txtMail.getText());
             ansprechpartner.setUnternehmen(org);
-            dialogStage.close();
-        } catch (Exception e) {
+            dialogStage.close();}
+            else  throw new IllegalArgumentException();
+        }catch (IllegalArgumentException e)
+        {
+            new InfoWindows("FEHLER", "Ungültige Parameter für einen Ansprechpartner", "Ungültiges Format für Email");
+        }
+        catch (Exception e) {
             new InfoWindows("FEHLER", null, "Ungültige Parameter für einen Ansprechpartner");
         }
 
@@ -138,7 +144,12 @@ public class AnsprechpartnerEditierenController {
             return false;
         }
     }
-
+    private boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
     /**
      * Setze Aktuelle Werte in die TextEdit boxen
      * @param ansprechpartner
