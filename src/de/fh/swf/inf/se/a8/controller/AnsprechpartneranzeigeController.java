@@ -63,7 +63,6 @@ public class AnsprechpartneranzeigeController {
      */
     @FXML
     public void initialize() {
-        //TODO: Auswahlhandler
 
         tv_AP.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Object>>() {
             @Override

@@ -72,7 +72,6 @@ public class Organisation {
     }
 
     public Organisation() {
-        // TODO - implement Organisation.Organisation
         throw new UnsupportedOperationException();
     }
     @Override

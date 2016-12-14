@@ -87,7 +87,6 @@ public class Ansprechpartner {
 
 
     public Ansprechpartner() {
-        // TODO - implement Ansprechpartner.Ansprechpartner
         throw new UnsupportedOperationException();
     }
 

@@ -23,7 +23,6 @@ import java.io.IOException;
  * Created by dsee on 10.12.2016.
  */
 public class AnsprechpartnerAnlegenController {
-    //TODO: Editable bool für offenes Org fenster
     @FXML
     private ComboBox<String> cb_Org;
     @FXML
