@@ -124,7 +124,7 @@ public class AnsprechpartnerEditierenController {
 
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/organisationanlegen.fxml"));
+            loader.setLocation(Main.class.getResource("view/orgNewWindow.fxml"));
             AnchorPane page = loader.load();
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Ogranisation anlegen");

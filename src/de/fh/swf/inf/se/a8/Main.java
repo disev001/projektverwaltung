@@ -47,7 +47,7 @@ public class Main extends Application {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/ansprechpartneranzeige.fxml"));
+            loader.setLocation(Main.class.getResource("view/anspView.fxml"));
             rootLayout = loader.load();
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
@@ -82,7 +82,7 @@ public class Main extends Application {
     public boolean showNewOrg() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/organisationanlegen.fxml"));
+            loader.setLocation(Main.class.getResource("view/orgNewWindow.fxml"));
             AnchorPane page = loader.load();
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Ogranisation anlegen");
@@ -167,7 +167,7 @@ public class Main extends Application {
     public boolean showNewAnsp(ObservableList<Organisation> list) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/ansprechpartneranlegen.fxml"));
+            loader.setLocation(Main.class.getResource("view/anspNewWindow.fxml"));
             AnchorPane page = loader.load();
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Ansprechpartner anlegen");
