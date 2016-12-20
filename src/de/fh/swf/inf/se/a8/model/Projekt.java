@@ -112,17 +112,23 @@ public class Projekt {
         int i = 0;
         for (Student s : projektgruppe) {
             i++;
-            studenten += "\nTeilnehmer Nr" + i + ": " + s.getNachname() + " " + s.getVorname();
+            if(i>1)
+                studenten+=", ";
+            studenten += s.getNachname() + " " + s.getVorname();
+
         }
 
         String aName = this.ansprechpartner.getName();
         String aVname = this.ansprechpartner.getVorname();
 
-        return "\nProjekttitel: " + this.projekttitel +
+        return this.projekttitel+"("+studenten +")";
+
+     /*   return "\nProjekttitel: " + this.projekttitel +
                 "\n Projektbeschreibung: " + this.projektbeschreibung +
                 "\n Vortrag nr1: " + this.vortrag1 +
                 "\n Vortrag nr2: " + this.vortrag2 +
                 "\n Ansprechpartner: " + aVname + " " + aVname +
-                studenten + "\n";
+                studenten + "\n";*/
+
     }
 }

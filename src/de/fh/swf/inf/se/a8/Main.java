@@ -3,6 +3,8 @@ package de.fh.swf.inf.se.a8;
 import de.fh.swf.inf.se.a8.controller.*;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
+import de.fh.swf.inf.se.a8.model.Projekt;
+import de.fh.swf.inf.se.a8.model.Student;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -24,7 +26,10 @@ public class Main extends Application {
     public ObservableList<Organisation> organisations = FXCollections.observableArrayList();
 
 
+
     public void main() {
+
+
 
     }
 
@@ -38,11 +43,17 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Pruefungsverwaltung");
 
-        DBcontroller db = new DBcontroller();
-        db.connectDB();
-        organisations = db.readOrgTable();
-        ansprechpartners = db.readAnspTable(organisations);
-        db.disconnectDB();
+        //Testdaten
+
+
+            // write your code here
+
+
+        //DBcontroller db = new DBcontroller();
+        //db.connectDB();
+        //organisations = db.readOrgTable();
+        //ansprechpartners = db.readAnspTable(organisations);
+        //db.disconnectDB();
 
         try {
             // Load root layout from fxml file.

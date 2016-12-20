@@ -9,12 +9,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Node;
 
 /**
  * Created by dsee on 19.12.2016.
@@ -36,6 +40,9 @@ public class LoginController {
 
     @FXML
     public void initialize() {
+        txtUser.setText("Dozent");
+        userevent();
+        pwevent();
 
     }
 
@@ -75,6 +82,7 @@ public class LoginController {
                 DozentMainController controller = loader.getController();
                 controller.setMainApp(mainApp);
                 controller.setDialogStage(dialogStage);
+                controller.setList();
                 mainApp.getPrimaryStage().close();
                 dialogStage.showAndWait();
             } catch (IOException e) {
@@ -89,6 +97,7 @@ public class LoginController {
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
+
 
     /**
      * Abbruch ohne bestätigung
@@ -113,4 +122,28 @@ public class LoginController {
             return true;
         else return false;
     }
+
+
+    private void userevent() {
+        txtUser.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    btnLogin.fire();
+                }
+            }
+        });
+    }
+
+    private void pwevent() {
+        pw.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    btnLogin.fire();
+                }
+            }
+        });
+    }
+
 }
