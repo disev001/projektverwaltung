@@ -40,7 +40,7 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        txtUser.setText("Dozent");
+        txtUser.setText("Student");
         userevent();
         pwevent();
 
@@ -82,7 +82,7 @@ public class LoginController {
                 DozentMainController controller = loader.getController();
                 controller.setMainApp(mainApp);
                 controller.setDialogStage(dialogStage);
-                controller.setList();
+
                 mainApp.getPrimaryStage().close();
                 dialogStage.showAndWait();
             } catch (IOException e) {

@@ -1,5 +1,8 @@
 package de.fh.swf.inf.se.a8.model;
 
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 

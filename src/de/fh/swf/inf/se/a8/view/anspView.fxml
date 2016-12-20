@@ -70,6 +70,7 @@
          <bottom>
             <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
               <buttons>
+                  <Button fx:id="handleOK" mnemonicParsing="false" text="OK" />
                 <Button fx:id="btn_addAP" mnemonicParsing="false" onAction="#handleNewAnsprechpartner" text="Ansprechpartner anlegen" />
                   <Button fx:id="btn_addOrg" mnemonicParsing="false" onAction="#handleNewOrg" text="Neue Organisation anlegen" />
               </buttons>

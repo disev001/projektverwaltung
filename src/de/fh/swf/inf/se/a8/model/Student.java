@@ -71,4 +71,8 @@ public class Student {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public String toString() {
+		return matrikelnummer+": "+nachname+", "+vorname;
+	}
 }

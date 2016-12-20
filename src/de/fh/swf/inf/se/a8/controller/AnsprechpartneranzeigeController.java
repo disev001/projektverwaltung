@@ -6,9 +6,11 @@ import de.fh.swf.inf.se.a8.model.Organisation;
 import de.fh.swf.inf.se.a8.model.TreeViewHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -43,12 +45,14 @@ public class AnsprechpartneranzeigeController {
     private MenuItem miDel;
     @FXML
     private MenuItem miAbout;
-    private ObservableList<Ansprechpartner> ansprechpartnerList;
-    private ObservableList<Organisation> organisationList;
+    private ObservableList<Ansprechpartner> ansprechpartnerList = FXCollections.observableArrayList();
+    ;
+    private ObservableList<Organisation> organisationList = FXCollections.observableArrayList();
+    ;
     private Ansprechpartner selectedAP;
     private Organisation selectedOrg;
     private boolean isOrg;
-
+    private Stage dialogStage;
     private Main mainApp;
 
     /**
@@ -116,8 +120,16 @@ public class AnsprechpartneranzeigeController {
     }
 
     public void setListe() {
-        this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
-        this.organisationList = this.mainApp.getOrganisations();
+        Organisation org1 = new Organisation("Musterorg", 58762, "Altena", "Amselweg 6a");
+        Organisation org2 = new Organisation("FHSWF", 55442, "Iserlohn", "Frauenstuhlweg 31");
+        Ansprechpartner an1 = new Ansprechpartner("Katze", "Wasilisa", "dsee@doldrums.de", "02352/546521", org1);
+        Ansprechpartner an2 = new Ansprechpartner("Klug", "Uwe", "klug.uwe@fh-swf.de", "02242/8087652", org1);
+
+        this.organisationList.addAll(org1, org2);
+        this.ansprechpartnerList.addAll(an1, an2);
+        loadTreeItems();
+        //  this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
+        //  this.organisationList = this.mainApp.getOrganisations();
     }
 
 
@@ -219,4 +231,12 @@ public class AnsprechpartneranzeigeController {
     private void handleCancel() {
         mainApp.closeApp();
     }
+
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
+    }
+    @FXML void handleOK(){
+            dialogStage.close();
+    }
+
 }
