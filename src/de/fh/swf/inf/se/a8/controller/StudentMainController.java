@@ -8,10 +8,16 @@ import de.fh.swf.inf.se.a8.model.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Created by dsee on 19.12.2016.
@@ -64,5 +70,69 @@ public class StudentMainController {
         projekte.add(p1);
         p1.addStudent(student2);
         listProjekte.getItems().addAll(projekte);
+    }
+
+    @FXML
+    private void handleDetails(){
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/projView.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ansprechpartner");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(this.dialogStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            ProjektAnzeigenController controller = loader.getController();
+            controller.setMainApp(this.mainApp);
+
+            controller.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleDescription(){
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/projAddDetails.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Projektbeschreibung Einreichen");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(this.dialogStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            ProjektDetailsAddController controller = loader.getController();
+            controller.setMainApp(this.mainApp);
+
+            controller.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleNewProject(){
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/projNewWindow.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Neues Projekt Anlegen");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(this.dialogStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            ProjektAnlegenController controller = loader.getController();
+            controller.setMainApp(this.mainApp);
+
+            controller.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

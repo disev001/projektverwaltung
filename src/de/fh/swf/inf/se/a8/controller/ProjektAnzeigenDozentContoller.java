@@ -6,14 +6,18 @@ import de.fh.swf.inf.se.a8.model.Projekt;
 import de.fh.swf.inf.se.a8.model.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -56,6 +60,37 @@ public class ProjektAnzeigenDozentContoller {
         radio1.setToggleGroup(group);
         radio2.setToggleGroup(group);
         radio3.setToggleGroup(group);
+        btnDskizze.setOnAction(new EventHandler<ActionEvent>() {
+                                  public void handle(ActionEvent event) {
+                                      FileChooser fileChooser = new FileChooser();
+                                      fileChooser.setTitle("Save Skizze");
+                                      File file = fileChooser.showSaveDialog(dialogStage);
+                                      if (file != null) {
+                                          try {
+                                              ;
+                                          } catch (Exception e) {
+                                              ;
+                                          }
+                                      }
+                                  }
+                              }
+        );
+
+        btnDbeschreibung.setOnAction(new EventHandler<ActionEvent>() {
+                                        public void handle(ActionEvent event) {
+                                            FileChooser fileChooser = new FileChooser();
+                                            fileChooser.setTitle("Save Beschreibung");
+                                            File file = fileChooser.showSaveDialog(dialogStage);
+                                            if (file != null) {
+                                                try {
+                                                    ;
+                                                } catch (Exception e) {
+                                                    ;
+                                                }
+                                            }
+                                        }
+                                    }
+        );
     }
 
     public void setDialogStage(Stage dialogStage) {
@@ -63,10 +98,10 @@ public class ProjektAnzeigenDozentContoller {
     }
 
     public void setSelected(Projekt selected) {
-        ObservableList<Student> students = FXCollections.observableArrayList();
         this.selected = selected;
         lblProjekttitel.setText(selected.getProjekttitel());
         lblAnsprechpartner.setText(selected.getAnsprechpartner().getName() + ", " + selected.getAnsprechpartner().getVorname());
+        ObservableList<Student> students = FXCollections.observableArrayList();
         for (Student s : selected.getProjektgruppe()) {
             students.add(s);
         }

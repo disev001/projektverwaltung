@@ -46,9 +46,9 @@ public class AnsprechpartneranzeigeController {
     @FXML
     private MenuItem miAbout;
     private ObservableList<Ansprechpartner> ansprechpartnerList = FXCollections.observableArrayList();
-    ;
+
     private ObservableList<Organisation> organisationList = FXCollections.observableArrayList();
-    ;
+
     private Ansprechpartner selectedAP;
     private Organisation selectedOrg;
     private boolean isOrg;

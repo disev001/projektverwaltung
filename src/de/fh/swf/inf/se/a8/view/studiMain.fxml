@@ -38,9 +38,9 @@
          <bottom>
             <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
               <buttons>
-                <Button fx:id="btnDetails" mnemonicParsing="false" text="Details ansehen" />
-                  <Button fx:id="btnEinreichen" mnemonicParsing="false" text="Projektbeschreibung einreichen" />
-                  <Button fx:id="btnNewProject" mnemonicParsing="false" text="Neuen Projekt Anlegen" />
+                <Button fx:id="btnDetails" mnemonicParsing="false" onAction="#handleDetails" text="Details ansehen" />
+                  <Button fx:id="btnEinreichen" mnemonicParsing="false" onAction="#handleDescription" text="Projektbeschreibung einreichen" />
+                  <Button fx:id="btnNewProject" mnemonicParsing="false" onAction="#handleNewProject" text="Neuen Projekt Anlegen" />
               </buttons>
             </ButtonBar>
          </bottom>
