@@ -47,15 +47,14 @@ public class Main extends Application {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/anspView.fxml"));
+            loader.setLocation(Main.class.getResource("view/loginWindow.fxml"));
             rootLayout = loader.load();
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.show();
-            AnsprechpartneranzeigeController controller = loader.getController();
+            LoginController controller = loader.getController();
             controller.setMainApp(this);
-            controller.loadTreeItems();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -116,7 +116,6 @@ public class AnsprechpartnerAnlegenController {
      */
     @FXML
     public boolean handleNewOrg() {
-
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/orgNewWindow.fxml"));
