@@ -79,7 +79,7 @@ public class StudentMainController {
             loader.setLocation(Main.class.getResource("view/projView.fxml"));
             AnchorPane page = loader.load();
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Ansprechpartner");
+            dialogStage.setTitle("Projektdetails");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(this.dialogStage);
             Scene scene = new Scene(page);

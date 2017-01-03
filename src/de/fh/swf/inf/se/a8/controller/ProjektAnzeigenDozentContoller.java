@@ -146,7 +146,7 @@ public class ProjektAnzeigenDozentContoller {
             loader.setLocation(Main.class.getResource("view/addStudent.fxml"));
             AnchorPane page = loader.load();
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Ansprechpartner");
+            dialogStage.setTitle("Student hinzufügen");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(this.dialogStage);
             Scene scene = new Scene(page);

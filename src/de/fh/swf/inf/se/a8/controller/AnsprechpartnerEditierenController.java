@@ -127,7 +127,7 @@ public class AnsprechpartnerEditierenController {
             loader.setLocation(Main.class.getResource("view/orgNewWindow.fxml"));
             AnchorPane page = loader.load();
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Ogranisation anlegen");
+            dialogStage.setTitle("Organisation anlegen");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(this.dialogStage);
             Scene scene = new Scene(page);

@@ -87,7 +87,7 @@ public class DozentMainController {
             loader.setLocation(Main.class.getResource("view/projDozentView.fxml"));
             AnchorPane page = loader.load();
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Ansprechpartner anlegen");
+            dialogStage.setTitle("Projektdetails");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(this.dialogStage);
             Scene scene = new Scene(page);
