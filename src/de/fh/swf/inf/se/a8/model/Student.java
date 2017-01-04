@@ -12,11 +12,15 @@ public class Student {
 	private int matrikelnummer;
 
 
-	public Student(String nachname, String vorname, String email, int matrikelnummer) {
+
+	private String password;
+
+	public Student(String nachname, String vorname, String email, int matrikelnummer, String password) {
 		this.nachname = nachname;
 		this.vorname = vorname;
 		this.email = email;
 		this.matrikelnummer = matrikelnummer;
+		this.password = password;
 	}
 
 	public String getNachname() {
@@ -70,9 +74,12 @@ public class Student {
 	public Student() {
 		throw new UnsupportedOperationException();
 	}
-
+	public String getPassword() {
+		return password;
+	}
 	@Override
 	public String toString() {
 		return matrikelnummer+": "+nachname+", "+vorname;
 	}
+
 }

@@ -38,10 +38,7 @@ public class ProjektAnzeigenController {
         lblEnscheidung.setText("Zugelassen");
         tfComment.setText("Alles OK, Termin kommt später");
         ObservableList<Student> students = FXCollections.observableArrayList();
-        Student student1 = new Student("Severgin", "Dieter", "severgin.dieter@fh-swf.de", 10040845);
-        Student student2 = new Student("Mustermann", "Max", "musterman.max@fh-swf.de", 10042334);
-        students.addAll(student1,student2);
-        listTeilnehmer.setItems(students);
+
     }
 
     public void setMainApp(Main mainApp) {

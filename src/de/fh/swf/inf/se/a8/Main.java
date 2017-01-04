@@ -22,14 +22,14 @@ import java.io.IOException;
 public class Main extends Application {
     private AnchorPane rootLayout;
     private Stage primaryStage;
+
+    public ObservableList<Student> students = FXCollections.observableArrayList();
     public ObservableList<Ansprechpartner> ansprechpartners = FXCollections.observableArrayList();
     public ObservableList<Organisation> organisations = FXCollections.observableArrayList();
-
-
+    public ObservableList<Projekt> projekts = FXCollections.observableArrayList();
+    public ObservableList<Student> dozents = FXCollections.observableArrayList();
 
     public void main() {
-
-
 
     }
 
@@ -45,15 +45,12 @@ public class Main extends Application {
 
         //Testdaten
 
-
-            // write your code here
-
-
-        //DBcontroller db = new DBcontroller();
-        //db.connectDB();
-        //organisations = db.readOrgTable();
-        //ansprechpartners = db.readAnspTable(organisations);
-        //db.disconnectDB();
+        DBcontroller db = new DBcontroller();
+        db.connectDB();
+        students = db.readStudentTable();
+        organisations = db.readOrgTable();
+        ansprechpartners = db.readAnspTable(organisations);
+        db.disconnectDB();
 
         try {
             // Load root layout from fxml file.
@@ -139,6 +136,7 @@ public class Main extends Application {
             return false;
         }
     }
+
     /**
      * Laden der Stage für Ansprechpartner editieren Dialogfenster
      *
@@ -200,9 +198,17 @@ public class Main extends Application {
     public ObservableList<Ansprechpartner> getAnsprechpartners() {
         return ansprechpartners;
     }
-
     public ObservableList<Organisation> getOrganisations() {
         return organisations;
+    }
+    public ObservableList<Student> getStudents() {
+        return students;
+    }
+    public ObservableList<Projekt> getProjekts() {
+        return projekts;
+    }
+    public ObservableList<Student> getDozents() {
+        return dozents;
     }
 
     //Übergabe der Stage an fremde Klassen um damit zu interagieren

@@ -6,6 +6,7 @@ import de.fh.swf.inf.se.a8.model.Projekt;
 import de.fh.swf.inf.se.a8.model.Student;
 import javafx.collections.ObservableList;
 
+import java.io.File;
 import java.util.Observable;
 
 /**
@@ -18,7 +19,7 @@ public class testrun {
     public  ObservableList<Projekt> projektListe;
     public testrun(){
     // write your code here
-    Student student1 = new Student("Severgin", "Dieter", "severgin.dieter@fh-swf.de", 10040845);
+ /*   Student student1 = new Student("Severgin", "Dieter", "severgin.dieter@fh-swf.de", 10040845);
     Student student2 = new Student("Mustermann", "Max", "musterman.max@fh-swf.de", 10042334);
     Student student3 = new Student("Doe", "John", "doe.john@anon.de", 2933923);
     Student student4 = new Student("Mono", "Willi", "krassertypXXX@t-online.de", 32423423);
@@ -28,14 +29,14 @@ public class testrun {
 
     Ansprechpartner an1 = new Ansprechpartner("Katze", "Wasilisa", "dsee@doldrums.de", "02352/546521", org1);
     Ansprechpartner an2 = new Ansprechpartner("Klug", "Uwe", "klug.uwe@fh-swf.de", "02242/8087652", org1);
-
-    Projekt p1 = new Projekt("Projektverwaltung", "Projektbeschreibung mit Skizze usw...", "20-03-2017", "10-04-2017", student1, an1);
+    File dummy = new File("C:/");
+    Projekt p1 =new Projekt("Projektverwaltung", dummy, dummy, student1 ,null,null , an1);
     p1.addStudent(student2);
 
     studentenListe.addAll(student1,student2,student3,student4);
     organisationsListe.addAll(org1,org2);
     ansprechpartnerListe.addAll(an1,an2);
-    projektListe.addAll(p1);
+    projektListe.addAll(p1);*/
 /*
     //test1
         System.out.print(p1.toString());

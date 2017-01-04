@@ -24,13 +24,6 @@ public class ProjektStudentAddController {
 
     private void setList() {
 
-        Student student1 = new Student("Severgin", "Dieter", "severgin.dieter@fh-swf.de", 10040845);
-        Student student2 = new Student("Mustermann", "Max", "musterman.max@fh-swf.de", 10042334);
-        Student student3 = new Student("Doe", "John", "doe.john@anon.de", 2933923);
-        Student student4 = new Student("Mono", "Willi", "krassertypXXX@t-online.de", 32423423);
-        ObservableList<Student> students = FXCollections.observableArrayList();
-        students.addAll(student1, student2, student3, student4);
-        cbStudents.setItems(students);
     }
     @FXML
     private void handleAdd() {

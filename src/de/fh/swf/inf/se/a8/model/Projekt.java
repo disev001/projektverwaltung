@@ -1,8 +1,6 @@
 package de.fh.swf.inf.se.a8.model;
 
-import javafx.collections.ObservableArray;
-import javafx.collections.ObservableList;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,22 +10,22 @@ import java.util.Collection;
 public class Projekt {
 
     private String projekttitel;
-    private String projektbeschreibung;
-    private String vortrag1;
-    private String vortrag2;
+    private File projektskizze;
+    private File projektbeschreibung;
     private Collection<Student> projektgruppe = new ArrayList<Student>();
     private Ansprechpartner ansprechpartner;
 
-    public Projekt(String projekttitel, String projektbeschreibung, String vortrag1, String vortrag2, Student student, Ansprechpartner ansprechpartner) throws IllegalArgumentException{
+    public Projekt(String projekttitel, File projektskizze, File projektbeschreibung, Student student, Student student2, Student student3, Ansprechpartner ansprechpartner) throws IllegalArgumentException {
         this.projekttitel = projekttitel;
         this.projektbeschreibung = projektbeschreibung;
 
-            if (student != null)
-                this.addStudent(student);
-            else throw new IllegalArgumentException("\n Projekt wurde nicht angelegt\n");
-
-        this.vortrag1 = vortrag1;
-        this.vortrag2 = vortrag2;
+        if (student != null)
+            this.addStudent(student);
+        else throw new IllegalArgumentException("\n Projekt wurde nicht angelegt\n");
+        if (student2 != null)
+            this.addStudent(student2);
+        if (student3 != null)
+            this.addStudent(student3);
         this.ansprechpartner = ansprechpartner;
     }
 
@@ -42,42 +40,32 @@ public class Projekt {
         this.projekttitel = projekttitel;
     }
 
-    public String getProjektbeschreibung() {
+    public File getProjektbeschreibung() {
         return this.projektbeschreibung;
     }
 
     /**
      * @param projektbeschreibung
      */
-    public void setProjektbeschreibung(String projektbeschreibung) {
+    public void setProjektbeschreibung(File projektbeschreibung) {
         this.projektbeschreibung = projektbeschreibung;
     }
 
-    public String getVortrag1() {
-        return this.vortrag1;
+    public File getProjektskizze() {
+        return projektskizze;
     }
 
-    /**
-     * @param vortrag1
-     */
-    public void setVortrag1(String vortrag1) {
-        this.vortrag1 = vortrag1;
+    public void setProjektskizze(File projektskizze) {
+        this.projektskizze = projektskizze;
     }
-
-    public String getVortrag2() {
-        return this.vortrag2;
-    }
-
-
 
     public Collection<Student> getProjektgruppe() {
         return this.projektgruppe;
     }
+
     public void setProjektgruppe(Collection<Student> projektgruppe) {
         this.projektgruppe = projektgruppe;
     }
-
-
 
     public Ansprechpartner getAnsprechpartner() {
         return this.ansprechpartner;
@@ -89,11 +77,11 @@ public class Projekt {
     public void setAnsprechpartner(Ansprechpartner ansprechpartner) {
         this.ansprechpartner = ansprechpartner;
     }
+
     /**
-     *
      * @param student
      */
-    public void addStudent(Student student)  throws IllegalArgumentException {
+    public void addStudent(Student student) throws IllegalArgumentException {
 
 
         if (student != null)
@@ -104,19 +92,18 @@ public class Projekt {
         else throw new IllegalArgumentException("\n Student wurde nicht hinzugefügt\n");
 
     }
+
     @Override
     public String toString() {
         this.projekttitel = projekttitel;
         this.projektbeschreibung = projektbeschreibung;
-        this.vortrag1 = vortrag1;
-        this.vortrag2 = vortrag2;
         //this.projektgruppe = projektgruppe;
         String studenten = "";
         int i = 0;
         for (Student s : projektgruppe) {
             i++;
-            if(i>1)
-                studenten+=", ";
+            if (i > 1)
+                studenten += ", ";
             studenten += s.getNachname() + " " + s.getVorname();
 
         }
@@ -124,14 +111,6 @@ public class Projekt {
         String aName = this.ansprechpartner.getName();
         String aVname = this.ansprechpartner.getVorname();
 
-        return this.projekttitel+"("+studenten +")";
-
-     /*   return "\nProjekttitel: " + this.projekttitel +
-                "\n Projektbeschreibung: " + this.projektbeschreibung +
-                "\n Vortrag nr1: " + this.vortrag1 +
-                "\n Vortrag nr2: " + this.vortrag2 +
-                "\n Ansprechpartner: " + aVname + " " + aVname +
-                studenten + "\n";*/
-
+        return this.projekttitel + "(" + studenten + ")";
     }
 }

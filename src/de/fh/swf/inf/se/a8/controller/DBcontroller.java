@@ -2,6 +2,7 @@ package de.fh.swf.inf.se.a8.controller;
 
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
+import de.fh.swf.inf.se.a8.model.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -149,6 +150,29 @@ public class DBcontroller {
         }
     }
 
+
+    public ObservableList<Student> readStudentTable(){
+        ObservableList<Student> studentList = FXCollections.observableArrayList();
+
+        try {
+            st = connection.createStatement();
+            String sql = "SELECT matrikelnummer, nachname, vorname,email,password FROM student";
+
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                int matrikelnummer = rs.getInt("matrikelnummer");
+                String nachname = rs.getString("nachname");
+                String vorname = rs.getString("vorname");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                studentList.add(new Student(nachname, vorname, email,matrikelnummer,password));
+            }
+            return studentList;
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+        return null;
+    }
     /**
      * Lösche von Tabellen vor dem Speichern
      */
