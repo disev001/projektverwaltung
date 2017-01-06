@@ -15,12 +15,11 @@ public class Student {
 
 	private String password;
 
-	public Student(String nachname, String vorname, String email, int matrikelnummer, String password) {
+	public Student(String nachname, String vorname, String email, int matrikelnummer) {
 		this.nachname = nachname;
 		this.vorname = vorname;
 		this.email = email;
 		this.matrikelnummer = matrikelnummer;
-		this.password = password;
 	}
 
 	public String getNachname() {
@@ -28,7 +27,7 @@ public class Student {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param nachname
 	 */
 	public void setNachname(String nachname) {
@@ -40,7 +39,7 @@ public class Student {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param vorname
 	 */
 	public void setVorname(String vorname) {
@@ -52,7 +51,7 @@ public class Student {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param email
 	 */
 	public void setEmail(String email) {
@@ -64,7 +63,7 @@ public class Student {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param matrikelnummer
 	 */
 	public void setMatrikelnummer(int matrikelnummer) {
@@ -79,7 +78,7 @@ public class Student {
 	}
 	@Override
 	public String toString() {
-		return matrikelnummer+": "+nachname+", "+vorname;
+		return matrikelnummer+": "+nachname+", "+vorname+" E-mail:"+ email;
 	}
 
 }

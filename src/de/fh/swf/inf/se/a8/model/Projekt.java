@@ -14,11 +14,12 @@ public class Projekt {
     private File projektbeschreibung;
     private Collection<Student> projektgruppe = new ArrayList<Student>();
     private Ansprechpartner ansprechpartner;
+    private Student dozent;
+    private int entscheidung;
+    private String kommentar;
 
-    public Projekt(String projekttitel, File projektskizze, File projektbeschreibung, Student student, Student student2, Student student3, Ansprechpartner ansprechpartner) throws IllegalArgumentException {
+    public Projekt(String projekttitel, Student student, Student student2, Student student3, Ansprechpartner ansprechpartner, Student dozent, int entscheidung, String kommentar) throws IllegalArgumentException {
         this.projekttitel = projekttitel;
-        this.projektbeschreibung = projektbeschreibung;
-
         if (student != null)
             this.addStudent(student);
         else throw new IllegalArgumentException("\n Projekt wurde nicht angelegt\n");
@@ -27,6 +28,11 @@ public class Projekt {
         if (student3 != null)
             this.addStudent(student3);
         this.ansprechpartner = ansprechpartner;
+        if (dozent.getMatrikelnummer() == 0)
+            this.dozent = dozent;
+        else throw new IllegalArgumentException("\n Projekt wurde nicht angelegt\n");
+        this.entscheidung = entscheidung;
+        this.kommentar = kommentar;
     }
 
     public String getProjekttitel() {
@@ -91,6 +97,34 @@ public class Projekt {
             else System.out.print("\nGruppe voll!\n");
         else throw new IllegalArgumentException("\n Student wurde nicht hinzugefügt\n");
 
+    }
+
+    public String getEntscheidung() {
+        switch (entscheidung) {
+            case 1:
+                return "Zugelassen";
+
+            case 2:
+                return "Abgelehnt";
+
+            case 3:
+                return "Bitte Ergänzen";
+
+            default:
+                return "Nicht bewertet";
+        }
+    }
+
+    public void setEntscheidung(int entscheidung) {
+        this.entscheidung = entscheidung;
+    }
+
+    public String getKommentar() {
+        return kommentar;
+    }
+
+    public void setKommentar(String kommentar) {
+        this.kommentar = kommentar;
     }
 
     @Override

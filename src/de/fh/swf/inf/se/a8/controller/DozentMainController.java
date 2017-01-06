@@ -39,12 +39,12 @@ public class DozentMainController {
     private Stage dialogStage = null;
     private ObservableList<Projekt> projekte = FXCollections.observableArrayList();
     private Projekt selectedProject = null;
+    private Student user;
 
-
-    public ObservableList<Student> studentenListe ;
-    public  ObservableList<Organisation> organisationsListe;
-    public ObservableList<Ansprechpartner> ansprechpartnerListe;
-    public  ObservableList<Projekt> projektListe;
+    private ObservableList<Student> studentenListe ;
+    private  ObservableList<Organisation> organisationsListe;
+    private ObservableList<Ansprechpartner> ansprechpartnerListe;
+    private  ObservableList<Projekt> projektListe;
     @FXML
     public void initialize(){
         listProjekte.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Projekt>() {
@@ -102,5 +102,10 @@ public class DozentMainController {
 
     public ObservableList<Projekt> getProjektListe() {
         return projektListe;
+    }
+
+    public void setUser(Student user) {
+        this.user = user;
+        dialogStage.setTitle(user.getNachname() +" - Projektverwaltung");
     }
 }

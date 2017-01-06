@@ -1,6 +1,7 @@
 package de.fh.swf.inf.se.a8.controller;
 
 import de.fh.swf.inf.se.a8.Main;
+import de.fh.swf.inf.se.a8.model.Projekt;
 import de.fh.swf.inf.se.a8.model.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,10 +31,11 @@ public class ProjektAnzeigenController {
     private ListView<Student> listTeilnehmer;
 
     private Main mainApp;
-    Stage dialogStage;
+    private Stage dialogStage;
+    private Projekt selectedProject;
 
     @FXML
-    private void initialize(){
+    private void initialize() {
         lblProjekttitel.setText("Projektverwaltung");
         lblEnscheidung.setText("Zugelassen");
         tfComment.setText("Alles OK, Termin kommt später");
@@ -44,14 +46,30 @@ public class ProjektAnzeigenController {
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
     }
+
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
+
     @FXML
-    private void handleOK(){
+    private void handleOK() {
         dialogStage.close();
     }
-    @FXML void handleClose(){
+
+    @FXML
+    void handleClose() {
         dialogStage.close();
+    }
+
+    public void setSelectedProject(Projekt selectedProject) {
+        this.selectedProject = selectedProject;
+        lblProjekttitel.setText(selectedProject.getProjekttitel());
+        lblEnscheidung.setText(selectedProject.getEntscheidung());
+        tfComment.setText(selectedProject.getKommentar());
+        ObservableList<Student> teilnehmer = FXCollections.observableArrayList();
+        for (Student s : selectedProject.getProjektgruppe()) {
+            teilnehmer.add(s);
+        }
+        listTeilnehmer.setItems(teilnehmer);
     }
 }

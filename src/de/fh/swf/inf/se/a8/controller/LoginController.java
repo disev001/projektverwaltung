@@ -36,10 +36,10 @@ public class LoginController {
     private Button btnLogin;
     @FXML
     private Button btnClose;
-    private ObservableList<Student> students = FXCollections.observableArrayList();
     private Main mainApp;
     private boolean okClicked = false;
     private Stage dialogStage;
+    private Student user = null;
 
 
     @FXML
@@ -54,8 +54,11 @@ public class LoginController {
     public void handleOK() {
         okClicked = true;
         try {
-
-            if (isStudent())
+            DBcontroller db = new DBcontroller();
+            db.connectDB();
+            user = db.loginUser(txtUser.getText(), pw.getText());
+            db.disconnectDB();
+            if (user.getMatrikelnummer() != 0)
                 try {
                     FXMLLoader loader = new FXMLLoader();
                     loader.setLocation(Main.class.getResource("view/studiMain.fxml"));
@@ -69,31 +72,31 @@ public class LoginController {
                     StudentMainController controller = loader.getController();
                     controller.setMainApp(mainApp);
                     controller.setDialogStage(dialogStage);
+                    controller.setUser(user);
                     mainApp.getPrimaryStage().close();
                     dialogStage.showAndWait();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            if (!isStudent())
-                try {
-                    FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(Main.class.getResource("view/dozentMain.fxml"));
-                    AnchorPane page = loader.load();
-                    Stage dialogStage = new Stage();
-                    dialogStage.setTitle("Dozent Projektverwaltung");
-                    dialogStage.initModality(Modality.WINDOW_MODAL);
-                    dialogStage.initOwner(this.dialogStage);
-                    Scene scene = new Scene(page);
-                    dialogStage.setScene(scene);
-                    DozentMainController controller = loader.getController();
-                    controller.setMainApp(mainApp);
-                    controller.setDialogStage(dialogStage);
-
-                    mainApp.getPrimaryStage().close();
-                    dialogStage.showAndWait();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            else try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(Main.class.getResource("view/dozentMain.fxml"));
+                AnchorPane page = loader.load();
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Dozent Projektverwaltung");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(this.dialogStage);
+                Scene scene = new Scene(page);
+                dialogStage.setScene(scene);
+                DozentMainController controller = loader.getController();
+                controller.setMainApp(mainApp);
+                controller.setDialogStage(dialogStage);
+                controller.setUser(user);
+                mainApp.getPrimaryStage().close();
+                dialogStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             new InfoWindows("Ungültiger Login", "Ungültiger Login", "Ungültiger Login");
         }
@@ -119,27 +122,6 @@ public class LoginController {
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
     }
-
-    public boolean isStudent() throws Exception{
-        students = mainApp.getStudents();
-        boolean role = false;
-        boolean found= false;
-        for (Student s : students) {
-            if (s.getEmail().equals(txtUser.getText()) && s.getPassword().equals(pw.getText()) && s.getMatrikelnummer() != 0) {
-                role = true;
-                found= true;
-                break;
-            } else if (s.getEmail().equals(txtUser.getText()) && s.getPassword().equals(pw.getText()) && s.getMatrikelnummer() == 0) {
-                role = false;
-                found= true;
-                break;
-            }
-        }
-        if (!found) throw new IllegalAccessException();
-        else if(role)return true;
-        else return false;
-    }
-
 
     private void userevent() {
         txtUser.setOnKeyPressed(new EventHandler<KeyEvent>() {

@@ -1,7 +1,9 @@
 package de.fh.swf.inf.se.a8.controller;
 
+import com.mysql.jdbc.PreparedStatement;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
+import de.fh.swf.inf.se.a8.model.Projekt;
 import de.fh.swf.inf.se.a8.model.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -51,7 +53,8 @@ public class DBcontroller {
     }
 
     /**
-     *  Lese Tabelle organisation
+     * Lese Tabelle organisation
+     *
      * @return Liste der ausgelesenen Tabelleneinträge für Organisationen
      */
     public ObservableList<Organisation> readOrgTable() {
@@ -68,7 +71,7 @@ public class DBcontroller {
                 int plz = rs.getInt("plz");
                 String ort = rs.getString("ort");
                 String strasse = rs.getString("strasse");
-                orgList.add(id-1, new Organisation(name, plz, ort, strasse));
+                orgList.add(id - 1, new Organisation(name, plz, ort, strasse));
             }
             return orgList;
         } catch (Exception e) {
@@ -76,8 +79,10 @@ public class DBcontroller {
         }
         return null;
     }
+
     /**
-     *  Lese Tabelle ansprechpartner
+     * Lese Tabelle ansprechpartner
+     *
      * @return Liste der ausgelesenen Tabelleneinträge für ansprechpartner
      */
     public ObservableList<Ansprechpartner> readAnspTable(ObservableList<Organisation> orgList) {
@@ -107,6 +112,7 @@ public class DBcontroller {
 
     /**
      * Fülle Tabelle organisation mit Listeninhalt
+     *
      * @param organisationList Liste mit aktuellen Organisationen
      * @return erfolgs bool
      */
@@ -114,7 +120,7 @@ public class DBcontroller {
         try {
             for (Organisation o : organisationList) {
                 st = connection.createStatement();
-                int index = organisationList.indexOf(o)+1;
+                int index = organisationList.indexOf(o) + 1;
                 String val = "'" + o.getName() + "','" + o.getOrt() + "','" + o.getStrasse() + "'," + o.getPlz() + "," + index;
                 String sql = "INSERT INTO organisation(name,ort,strasse,plz,id)VALUES (" + val + ");";
                 st.executeUpdate(sql);
@@ -126,8 +132,10 @@ public class DBcontroller {
             return false;
         }
     }
+
     /**
      * Fülle Tabelle Ansprechpartner mit Listeninhalt
+     *
      * @param organisationList Liste mit aktuellen Ansprechpartner
      * @return erfolgs bool
      */
@@ -136,7 +144,7 @@ public class DBcontroller {
 
             for (Ansprechpartner a : ansprechpartnerList) {
                 st = connection.createStatement();
-                int index = ansprechpartnerList.indexOf(a)+1;
+                int index = ansprechpartnerList.indexOf(a) + 1;
                 int uIndex = organisationList.indexOf(a.getUnternehmen());
                 String val = index + ",'" + a.getVorname() + "','" + a.getName() + "','" + a.getEmail() + "','"
                         + a.getTelefon() + "'," + uIndex;
@@ -151,7 +159,7 @@ public class DBcontroller {
     }
 
 
-    public ObservableList<Student> readStudentTable(){
+    public ObservableList<Student> readStudentTable() {
         ObservableList<Student> studentList = FXCollections.observableArrayList();
 
         try {
@@ -164,8 +172,7 @@ public class DBcontroller {
                 String nachname = rs.getString("nachname");
                 String vorname = rs.getString("vorname");
                 String email = rs.getString("email");
-                String password = rs.getString("password");
-                studentList.add(new Student(nachname, vorname, email,matrikelnummer,password));
+                studentList.add(new Student(nachname, vorname, email, matrikelnummer));
             }
             return studentList;
         } catch (Exception e) {
@@ -173,6 +180,90 @@ public class DBcontroller {
         }
         return null;
     }
+
+    public Student loginUser(String u, String p) throws IllegalAccessException {
+        Student user = null;
+        try {
+            st = connection.createStatement();
+            String sql = "SELECT matrikelnummer, nachname, vorname,email,password from student where email = ? and password = ?";
+            PreparedStatement pst = (PreparedStatement) connection.prepareStatement(sql);
+            pst.setString(1, u);
+            pst.setString(2, p);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                int matrikelnummer = rs.getInt("matrikelnummer");
+                String nachname = rs.getString("nachname");
+                String vorname = rs.getString("vorname");
+                String email = rs.getString("email");
+                user = new Student(nachname, vorname, email, matrikelnummer);
+            }
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+        return user;
+    }
+
+    public ObservableList<Projekt> readProjects(Student user, ObservableList<Student> studentenListe, ObservableList<Student> dozentenListe, ObservableList<Ansprechpartner> ansprechpartnerListe) throws IllegalAccessException {
+        ObservableList<Projekt> projekts = FXCollections.observableArrayList();
+        try {
+            int mknr = user.getMatrikelnummer();
+            st = connection.createStatement();
+            String sql = "SELECT * from projekt where student1 = ? OR student2= ? OR student3 = ?";
+            PreparedStatement pst = (PreparedStatement) connection.prepareStatement(sql);
+            pst.setInt(1, mknr);
+            pst.setInt(2, mknr);
+            pst.setInt(3, mknr);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                String projekttitel = rs.getString("projekttitel");
+                int student1 = rs.getInt("student1");
+                int student2 = rs.getInt("student2");
+                int student3 = rs.getInt("student3");
+                String ansprechpartner = rs.getString("ansprechpartner");
+                String dozent = rs.getString("dozent");
+                int entscheidung = rs.getInt("entscheidung");
+                String kommentar = rs.getString("kommentar");
+                Student s1 = null;
+                Student s2 = null;
+                Student s3 = null;
+                Student d = null;
+                Ansprechpartner ap = null;
+                for (Student s : studentenListe) {
+                    if (s.getMatrikelnummer() == student1 && s1 == null ) {
+                        s1 = s;
+                    }
+                    if (s.getMatrikelnummer() == student2 && s2 == null) {
+                        s2 = s;
+                    }
+                    if (s.getMatrikelnummer() == student3 && s3 == null) {
+                        s3 = s;
+                    }
+                }
+                for (Student dz : dozentenListe) {
+                    System.out.print(dz.getEmail());
+                    System.out.print(dozent);
+                    if (dz.getEmail().equals(dozent)) {
+                        d = dz;
+                        break;
+                    }
+
+                }
+                for (Ansprechpartner a : ansprechpartnerListe) {
+                    if (a.getEmail().equals(ansprechpartner)) {
+                        ap = a;
+                        break;
+                    }
+
+                }
+
+                projekts.add(new Projekt(projekttitel, s1, s2, s3, ap, d,entscheidung,kommentar));
+            }
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+        return projekts;
+    }
+
     /**
      * Lösche von Tabellen vor dem Speichern
      */

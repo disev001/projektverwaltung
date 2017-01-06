@@ -43,15 +43,6 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Pruefungsverwaltung");
 
-        //Testdaten
-
-        DBcontroller db = new DBcontroller();
-        db.connectDB();
-        students = db.readStudentTable();
-        organisations = db.readOrgTable();
-        ansprechpartners = db.readAnspTable(organisations);
-        db.disconnectDB();
-
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
@@ -193,7 +184,22 @@ public class Main extends Application {
             return false;
         }
     }
-
+/*    private void getDBdata() {
+        DBcontroller db = new DBcontroller();
+        db.connectDB();
+        db.loginUser("severgin.dieter@fh-swf.de","test");
+        students = db.readStudentTable();
+        for (Student s : students)
+        {
+            if(s.getMatrikelnummer() == 0) {
+                dozents.add(s);
+                students.remove(s);
+            }
+        }
+        organisations = db.readOrgTable();
+        ansprechpartners = db.readAnspTable(organisations);
+        db.disconnectDB();
+    } */
     //Übergabe an fremde Klassen um damit zu interagieren
     public ObservableList<Ansprechpartner> getAnsprechpartners() {
         return ansprechpartners;
