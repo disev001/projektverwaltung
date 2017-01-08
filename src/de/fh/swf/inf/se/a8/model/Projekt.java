@@ -10,18 +10,21 @@ import java.util.Collection;
 public class Projekt {
 
     private String projekttitel;
-    private File projektskizze;
-    private File projektbeschreibung;
+    private File projektskizze = null;
+    private File projektbeschreibung = null;
     private Collection<Student> projektgruppe = new ArrayList<Student>();
     private Ansprechpartner ansprechpartner;
+    private int mkNr1;
     private Student dozent;
     private int entscheidung;
     private String kommentar;
 
  public Projekt(String projekttitel, Student student, Student student2, Student student3, Ansprechpartner ansprechpartner, Student dozent, int entscheidung, String kommentar) throws IllegalArgumentException {
         this.projekttitel = projekttitel;
-        if (student != null)
+        if (student != null){
             this.addStudent(student);
+            this.mkNr1 = student.getMatrikelnummer();
+        }
         else throw new IllegalArgumentException("\n Projekt wurde nicht angelegt\n");
         if (student2 != null)
             this.addStudent(student2);
@@ -82,7 +85,9 @@ public class Projekt {
     public void setProjektgruppe(Collection<Student> projektgruppe) {
         this.projektgruppe = projektgruppe;
     }
-
+    public int getProjetteilnehmer1(){
+        return mkNr1;
+    }
     public Ansprechpartner getAnsprechpartner() {
         return this.ansprechpartner;
     }

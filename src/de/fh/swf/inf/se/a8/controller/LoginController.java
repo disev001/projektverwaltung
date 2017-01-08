@@ -44,7 +44,7 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        txtUser.setText("severgin.dieter@fh-swf.de");
+        txtUser.setText("klug.uwe@fh-swf.de");
         pw.setText("test");
         userevent();
         pwevent();

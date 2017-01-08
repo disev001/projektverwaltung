@@ -8,6 +8,8 @@ import de.fh.swf.inf.se.a8.model.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -229,7 +231,7 @@ public class DBcontroller {
                 Student d = null;
                 Ansprechpartner ap = null;
                 for (Student s : studentenListe) {
-                    if (s.getMatrikelnummer() == student1 && s1 == null ) {
+                    if (s.getMatrikelnummer() == student1 && s1 == null) {
                         s1 = s;
                     }
                     if (s.getMatrikelnummer() == student2 && s2 == null) {
@@ -256,7 +258,7 @@ public class DBcontroller {
 
                 }
 
-                projekts.add(new Projekt(projekttitel, s1, s2, s3, ap, d,entscheidung,kommentar));
+                projekts.add(new Projekt(projekttitel, s1, s2, s3, ap, d, entscheidung, kommentar));
             }
         } catch (Exception e) {
             System.out.print(e);
@@ -264,8 +266,15 @@ public class DBcontroller {
         return projekts;
     }
 
+    /**
+     * Einfügen von neu angelegten projekten in die DB
+     *
+     * @param p neu angelegtes projekt
+     * @param u user welcher das projekt anlegt
+     * @return erfolgstatus
+     */
     public boolean insertNewProjekt(Projekt p, Student u) {
-    boolean status = false;
+        boolean status = false;
         try {
             st = connection.createStatement();
             String sql = "INSERT INTO projekt (projekttitel,student1,ansprechpartner, dozent,entscheidung,kommentar) VALUES (?,?,?,?,?,?)";
@@ -285,6 +294,64 @@ public class DBcontroller {
         }
         return status;
     }
+
+    public boolean insertFile(Projekt p, String titel) {
+        boolean status = false;
+        try {
+
+            st = connection.createStatement();
+            String sql = "";
+            FileInputStream fisSkizze = null;
+            FileInputStream fisBeschreibung = null;
+
+            if (p.getProjektskizze() != null && p.getProjektbeschreibung() != null) {
+                fisSkizze = new FileInputStream(p.getProjektskizze());
+                fisBeschreibung = new FileInputStream(p.getProjektbeschreibung());
+                sql = "UPDATE projekt SET projektskizze = ? , projektbeschreibung = ? , projekttitel = ? WHERE projekt.projekttitel = ? AND projekt.student1 = ?";
+                PreparedStatement pst = (PreparedStatement) connection.prepareStatement(sql);
+                pst.setBinaryStream(1, fisSkizze, (int) p.getProjektskizze().length());
+                pst.setBinaryStream(2, fisBeschreibung, (int) p.getProjektbeschreibung().length());
+                pst.setString(3, p.getProjekttitel());
+                pst.setString(4, titel);
+                pst.setInt(5, p.getProjetteilnehmer1());
+                pst.executeUpdate();
+                status = true;
+                pst.close();
+                fisSkizze.close();
+                fisBeschreibung.close();
+            } else if (p.getProjektskizze() != null) {
+                fisSkizze = new FileInputStream(p.getProjektskizze());
+                sql = "UPDATE projekt SET projektskizze = ? , projekttitel = ? WHERE projekt.projekttitel = ?  AND projekt.student1 = ?";
+                PreparedStatement pst = (PreparedStatement) connection.prepareStatement(sql);
+                pst.setBinaryStream(1, fisSkizze, (int) p.getProjektskizze().length());
+                pst.setString(2, p.getProjekttitel());
+                pst.setString(3, titel);
+                pst.setInt(4, p.getProjetteilnehmer1());
+                pst.executeUpdate();
+                status = true;
+                pst.close();
+                fisSkizze.close();
+            } else if (p.getProjektbeschreibung() != null) {
+                fisBeschreibung = new FileInputStream(p.getProjektbeschreibung());
+                sql = "UPDATE projekt SET projektbeschreibung = ? , projekttitel = ?  WHERE projekt.projekttitel = ? AND projekt.student1 = ?";
+                PreparedStatement pst = (PreparedStatement) connection.prepareStatement(sql);
+                pst.setBinaryStream(1, fisBeschreibung, (int) p.getProjektbeschreibung().length());
+                pst.setString(2, p.getProjekttitel());
+                pst.setString(3, titel);
+                pst.setInt(4, p.getProjetteilnehmer1());
+                pst.executeUpdate();
+                status = true;
+                fisBeschreibung.close();
+            }
+
+        } catch (Exception e) {
+            status = false;
+            System.out.print(e);
+        } finally {
+        }
+        return status;
+    }
+
     /**
      * Lösche von Tabellen vor dem Speichern
      */

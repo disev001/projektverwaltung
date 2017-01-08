@@ -1,6 +1,8 @@
 package de.fh.swf.inf.se.a8.controller;
 
 import de.fh.swf.inf.se.a8.Main;
+import de.fh.swf.inf.se.a8.model.Projekt;
+import de.fh.swf.inf.se.a8.view.InfoWindows;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,9 +27,13 @@ public class ProjektDetailsAddController {
     private Button btnOK;
     @FXML
     private Button btnCancel;
-
+    private Projekt selectedProject = null;
     private Main mainApp;
-    Stage dialogStage;
+    private Stage dialogStage;
+    private String oldTitle = "";
+    private File beschreibung = null;
+    private File skizze = null;
+    private boolean isOkClicked;
 
     @FXML
     private void initialize() {
@@ -39,7 +45,8 @@ public class ProjektDetailsAddController {
                         fileChooser.setTitle("Upload Beschreibung");
                         File file = fileChooser.showOpenDialog(dialogStage);
                         if (file != null) {
-                            ;
+                            beschreibung = file;
+                            btnBeschreibung.setText(file.getName());
                         }
                     }
                 });
@@ -51,7 +58,8 @@ public class ProjektDetailsAddController {
                         fileChooser.setTitle("Upload Skizze");
                         File file = fileChooser.showOpenDialog(dialogStage);
                         if (file != null) {
-                            ;
+                            skizze = file;
+                            btnSkizze.setText(file.getName());
                         }
                     }
                 });
@@ -67,12 +75,52 @@ public class ProjektDetailsAddController {
 
 
     @FXML
-    private void handleOK() {
-        dialogStage.close();
+    private void handleOK() throws Exception {
+        isOkClicked = true;
+        try {
+            selectedProject.setProjekttitel(txtProjektTitel.getText());
+            selectedProject.setProjektskizze(skizze);
+            selectedProject.setProjektbeschreibung(beschreibung);
+            writeFiles();
+            dialogStage.close();
+        }catch (IllegalArgumentException e)
+        {
+            new InfoWindows("Fehler","Keine Daten zum Upload Hinzugefügt","Bitte wählen Sie Daten zum Upload aus");
+            isOkClicked = false;
+            selectedProject.setProjekttitel(oldTitle);
+        }
+        catch (Exception e) {
+            isOkClicked = false;
+            selectedProject.setProjekttitel(oldTitle);
+        }
+    }
+
+    public boolean isOkClicked() {
+        return isOkClicked;
     }
 
     @FXML
     private void handleClose() {
         dialogStage.close();
+    }
+
+    public void setSelectedProject(Projekt selectedProject) {
+        this.selectedProject = selectedProject;
+        txtProjektTitel.setText(selectedProject.getProjekttitel());
+        oldTitle = selectedProject.getProjekttitel();
+        //TODO: Ausblenden von uploads bei bereits eingegangenen daten
+     /*   if(selectedProject.getProjektbeschreibung() != null)
+            btnBeschreibung.setDisable(false);
+        if (selectedProject.getProjektskizze() != null)
+            btnSkizze.setDisable(false);*/
+    }
+
+    private void writeFiles() throws Exception{
+        DBcontroller db = new DBcontroller();
+        db.connectDB();
+        if (db.insertFile(selectedProject, oldTitle)) {
+            oldTitle = selectedProject.getProjekttitel();
+        }else throw new IllegalArgumentException();
+        db.disconnectDB();
     }
 }

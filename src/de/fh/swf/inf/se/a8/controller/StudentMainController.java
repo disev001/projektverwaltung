@@ -51,14 +51,18 @@ public class StudentMainController {
     ;
 
     private Student user;
-    private Projekt selectedItem;
+    private Projekt selectedItem = null;
 
     @FXML
     public void initialize() {
+        btnDetails.setDisable(true);
+        btnEinreichen.setDisable(true);
         listProjekte.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Projekt>() {
             @Override
             public void changed(ObservableValue<? extends Projekt> observable, Projekt oldValue, Projekt newValue) {
                 selectedItem = newValue;
+                btnDetails.setDisable(false);
+                btnEinreichen.setDisable(false);
             }
         });
         listProjekte.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -81,12 +85,18 @@ public class StudentMainController {
     }
 
     private void setList() {
-
         listProjekte.getItems().addAll(projekteListe);
     }
-    private void addToList(Projekt p){
+
+    private void reloadList() {
+        listProjekte.setItems(FXCollections.observableArrayList());
+        listProjekte.getItems().addAll(projekteListe);
+    }
+
+    private void addToList(Projekt p) {
         listProjekte.getItems().add(p);
     }
+
     @FXML
     private void handleDetails() {
         try {
@@ -124,9 +134,11 @@ public class StudentMainController {
             dialogStage.setScene(scene);
             ProjektDetailsAddController controller = loader.getController();
             controller.setMainApp(this.mainApp);
-
+            controller.setSelectedProject(selectedItem);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
+            if (controller.isOkClicked())
+                reloadList();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -149,11 +161,11 @@ public class StudentMainController {
             dialogStage.setScene(scene);
             ProjektAnlegenController controller = loader.getController();
             controller.setMainApp(this.mainApp);
-            controller.setLists(ansprechpartnerListe, dozentenListe,projekteListe, user);
+            controller.setLists(ansprechpartnerListe, dozentenListe, projekteListe, user);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
             if (controller.isOkClicked())
-            addToList(controller.getNewProject());
+                addToList(controller.getNewProject());
         } catch (IOException e) {
             e.printStackTrace();
         }
