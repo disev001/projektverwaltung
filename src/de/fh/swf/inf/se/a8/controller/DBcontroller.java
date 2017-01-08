@@ -264,6 +264,27 @@ public class DBcontroller {
         return projekts;
     }
 
+    public boolean insertNewProjekt(Projekt p, Student u) {
+    boolean status = false;
+        try {
+            st = connection.createStatement();
+            String sql = "INSERT INTO projekt (projekttitel,student1,ansprechpartner, dozent,entscheidung,kommentar) VALUES (?,?,?,?,?,?)";
+            PreparedStatement pst = (PreparedStatement) connection.prepareStatement(sql);
+
+            pst.setString(1, p.getProjekttitel());
+            pst.setInt(2, u.getMatrikelnummer());
+            pst.setString(3, p.getAnsprechpartner().getEmail());
+            pst.setString(4, p.getDozent().getEmail());
+            pst.setInt(5, 0);
+            pst.setString(6, "");
+            pst.executeUpdate();
+            status = true;
+        } catch (Exception e) {
+            status = false;
+            System.out.print(e);
+        }
+        return status;
+    }
     /**
      * Lösche von Tabellen vor dem Speichern
      */

@@ -54,14 +54,25 @@ public class ProjektAnlegenController {
     @FXML
     private void handleOK() {
         isOkClicked = true;
+        boolean isUnique = true;
         try {
+            for (Projekt p : projektListe)
+            {
+                if(p.getProjekttitel().equals(txtTitel.getText()))
+                {
+                    isUnique =false;
+                }
+            }
+
             if (!txtTitel.getText().isEmpty() && !cbAnsprechpartner.getSelectionModel().isEmpty() && !cbDozent.getSelectionModel().isEmpty())
             p = new Projekt(txtTitel.getText(),user,cbAnsprechpartner.getSelectionModel().getSelectedItem(),cbDozent.getSelectionModel().getSelectedItem());
             else throw new IllegalArgumentException();
             dialogStage.close();
         }catch (Exception e){
             isOkClicked =false;
+            if (isUnique)
             new InfoWindows("Fehler","Projekt nicht angelegt","Bitte füllen sie alle Daten aus");
+            else             new InfoWindows("Fehler","Projekt bereits vorhanden","Ein Projekt mit dem Titel '"+txtTitel.getText()+"' existiert bereits");
         }
     }
 
@@ -70,17 +81,21 @@ public class ProjektAnlegenController {
         dialogStage.close();
     }
 
-    public void setLists(ObservableList<Ansprechpartner> ansprechpartnerListe, ObservableList<Student> dozentenListe,Student user) {
+    public void setLists(ObservableList<Ansprechpartner> ansprechpartnerListe, ObservableList<Student> dozentenListe,ObservableList<Projekt> projekts,Student user) {
         this.ansprechpartnerList = ansprechpartnerListe;
         this.dozenteListe = dozentenListe;
         cbDozent.setItems(dozenteListe);
         cbAnsprechpartner.setItems(ansprechpartnerList);
         this.user = user;
+        this.projektListe = projekts;
     }
     public boolean isOkClicked(){
         return isOkClicked;
     }
     public Projekt getNewProject(){
+        DBcontroller db = new DBcontroller();
+        db.connectDB();
+        db.insertNewProjekt(p,user);
         return this.p;
     }
 }

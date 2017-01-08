@@ -149,7 +149,7 @@ public class StudentMainController {
             dialogStage.setScene(scene);
             ProjektAnlegenController controller = loader.getController();
             controller.setMainApp(this.mainApp);
-            controller.setLists(ansprechpartnerListe, dozentenListe, user);
+            controller.setLists(ansprechpartnerListe, dozentenListe,projekteListe, user);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
             if (controller.isOkClicked())
