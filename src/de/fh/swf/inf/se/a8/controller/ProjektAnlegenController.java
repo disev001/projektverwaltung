@@ -3,6 +3,9 @@ package de.fh.swf.inf.se.a8.controller;
 import de.fh.swf.inf.se.a8.Main;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
+import de.fh.swf.inf.se.a8.model.Projekt;
+import de.fh.swf.inf.se.a8.model.Student;
+import de.fh.swf.inf.se.a8.view.InfoWindows;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,11 +14,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
-import static javafx.collections.FXCollections.*;
-
 /**
  * Created by dsee on 19.12.2016.
  */
@@ -23,7 +21,7 @@ public class ProjektAnlegenController {
     @FXML
     private TextField txtTitel;
     @FXML
-    private ComboBox<String> cbDozent;
+    private ComboBox<Student> cbDozent;
     @FXML
     private ComboBox<Ansprechpartner> cbAnsprechpartner;
     @FXML
@@ -31,21 +29,14 @@ public class ProjektAnlegenController {
     @FXML
     private Button btnCancel;
     private ObservableList<Ansprechpartner> ansprechpartnerList = FXCollections.observableArrayList();
-    private ObservableList<String> dozenten = FXCollections.observableArrayList();
+    private ObservableList<Student> dozenteListe = FXCollections.observableArrayList();
+    private ObservableList<Projekt> projektListe = FXCollections.observableArrayList();
+    private Student user = null;
+    Projekt p = null;
+    private boolean isOkClicked = false;
+
     @FXML
-    private void initialize(){
-
-        Organisation org1 = new Organisation("Musterorg", 58762, "Altena", "Amselweg 6a");
-        Organisation org2 = new Organisation("FHSWF", 55442, "Iserlohn", "Frauenstuhlweg 31");
-        Ansprechpartner an1 = new Ansprechpartner("Katze", "Wasilisa", "dsee@doldrums.de", "02352/546521", org1);
-        Ansprechpartner an2 = new Ansprechpartner("Overmann", "", "klug.uwe@fh-swf.de", "02242/8087652", org1);
-
-        this.ansprechpartnerList.addAll(an1, an2);
-        cbAnsprechpartner.setItems(ansprechpartnerList);
-
-        this.dozenten.add("Klug, Uwe");
-        this.dozenten.add("Rübsam, Michael");
-        cbDozent.setItems(dozenten);
+    private void initialize() {
 
     }
 
@@ -59,11 +50,37 @@ public class ProjektAnlegenController {
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
+
     @FXML
-    private void handleOK(){
+    private void handleOK() {
+        isOkClicked = true;
+        try {
+            if (!txtTitel.getText().isEmpty() && !cbAnsprechpartner.getSelectionModel().isEmpty() && !cbDozent.getSelectionModel().isEmpty())
+            p = new Projekt(txtTitel.getText(),user,cbAnsprechpartner.getSelectionModel().getSelectedItem(),cbDozent.getSelectionModel().getSelectedItem());
+            else throw new IllegalArgumentException();
+            dialogStage.close();
+        }catch (Exception e){
+            isOkClicked =false;
+            new InfoWindows("Fehler","Projekt nicht angelegt","Bitte füllen sie alle Daten aus");
+        }
+    }
+
+    @FXML
+    void handleClose() {
         dialogStage.close();
     }
-    @FXML void handleClose(){
-        dialogStage.close();
+
+    public void setLists(ObservableList<Ansprechpartner> ansprechpartnerListe, ObservableList<Student> dozentenListe,Student user) {
+        this.ansprechpartnerList = ansprechpartnerListe;
+        this.dozenteListe = dozentenListe;
+        cbDozent.setItems(dozenteListe);
+        cbAnsprechpartner.setItems(ansprechpartnerList);
+        this.user = user;
+    }
+    public boolean isOkClicked(){
+        return isOkClicked;
+    }
+    public Projekt getNewProject(){
+        return this.p;
     }
 }

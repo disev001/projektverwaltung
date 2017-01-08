@@ -78,7 +78,9 @@ public class Student {
 	}
 	@Override
 	public String toString() {
-		return matrikelnummer+": "+nachname+", "+vorname+" E-mail:"+ email;
+		if(matrikelnummer !=0)
+		return matrikelnummer+": "+nachname+", "+vorname+" E-mail: "+ email;
+		else return nachname+", "+vorname;
 	}
 
 }

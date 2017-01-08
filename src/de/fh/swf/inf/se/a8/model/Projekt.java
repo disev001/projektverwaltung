@@ -18,7 +18,7 @@ public class Projekt {
     private int entscheidung;
     private String kommentar;
 
-    public Projekt(String projekttitel, Student student, Student student2, Student student3, Ansprechpartner ansprechpartner, Student dozent, int entscheidung, String kommentar) throws IllegalArgumentException {
+ public Projekt(String projekttitel, Student student, Student student2, Student student3, Ansprechpartner ansprechpartner, Student dozent, int entscheidung, String kommentar) throws IllegalArgumentException {
         this.projekttitel = projekttitel;
         if (student != null)
             this.addStudent(student);
@@ -34,7 +34,17 @@ public class Projekt {
         this.entscheidung = entscheidung;
         this.kommentar = kommentar;
     }
-
+    public Projekt(String projekttitel, Student student,Ansprechpartner ansprechpartner, Student dozent) throws IllegalArgumentException {
+        this.projekttitel = projekttitel;
+        if (student != null)
+            this.addStudent(student);
+        this.ansprechpartner = ansprechpartner;
+        if (dozent.getMatrikelnummer() == 0)
+            this.dozent = dozent;
+        else throw new IllegalArgumentException("\n Projekt wurde nicht angelegt\n");
+        this.entscheidung = 0;
+        this.kommentar = "";
+    }
     public String getProjekttitel() {
         return this.projekttitel;
     }
@@ -126,7 +136,13 @@ public class Projekt {
     public void setKommentar(String kommentar) {
         this.kommentar = kommentar;
     }
+    public Student getDozent() {
+        return dozent;
+    }
 
+    public void setDozent(Student dozent) {
+        this.dozent = dozent;
+    }
     @Override
     public String toString() {
         this.projekttitel = projekttitel;

@@ -52,6 +52,7 @@ public class StudentMainController {
 
     private Student user;
     private Projekt selectedItem;
+
     @FXML
     public void initialize() {
         listProjekte.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Projekt>() {
@@ -63,7 +64,7 @@ public class StudentMainController {
         listProjekte.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(event.getClickCount() >= 2){
+                if (event.getClickCount() >= 2) {
                     handleDetails();
                 }
             }
@@ -80,9 +81,12 @@ public class StudentMainController {
     }
 
     private void setList() {
+
         listProjekte.getItems().addAll(projekteListe);
     }
-
+    private void addToList(Projekt p){
+        listProjekte.getItems().add(p);
+    }
     @FXML
     private void handleDetails() {
         try {
@@ -100,6 +104,7 @@ public class StudentMainController {
             controller.setSelectedProject(selectedItem);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,6 +132,9 @@ public class StudentMainController {
         }
     }
 
+    public StudentMainController() {
+    }
+
     @FXML
     private void handleNewProject() {
         try {
@@ -141,9 +149,11 @@ public class StudentMainController {
             dialogStage.setScene(scene);
             ProjektAnlegenController controller = loader.getController();
             controller.setMainApp(this.mainApp);
-
+            controller.setLists(ansprechpartnerListe, dozentenListe, user);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
+            if (controller.isOkClicked())
+            addToList(controller.getNewProject());
         } catch (IOException e) {
             e.printStackTrace();
         }
