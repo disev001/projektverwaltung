@@ -14,15 +14,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 
@@ -42,13 +39,9 @@ public class StudentMainController {
     private Stage dialogStage;
     private ObservableList<Projekt> projekteListe = FXCollections.observableArrayList();
     private ObservableList<Student> studentenListe = FXCollections.observableArrayList();
-    ;
     private ObservableList<Student> dozentenListe = FXCollections.observableArrayList();
-    ;
     private ObservableList<Organisation> organisationsListe = FXCollections.observableArrayList();
-    ;
     private ObservableList<Ansprechpartner> ansprechpartnerListe = FXCollections.observableArrayList();
-    ;
 
     private Student user;
     private Projekt selectedItem = null;
@@ -57,6 +50,7 @@ public class StudentMainController {
     public void initialize() {
         btnDetails.setDisable(true);
         btnEinreichen.setDisable(true);
+
         listProjekte.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Projekt>() {
             @Override
             public void changed(ObservableValue<? extends Projekt> observable, Projekt oldValue, Projekt newValue) {
@@ -91,6 +85,7 @@ public class StudentMainController {
     private void reloadList() {
         listProjekte.setItems(FXCollections.observableArrayList());
         listProjekte.getItems().addAll(projekteListe);
+        listProjekte.getSelectionModel().selectFirst();
     }
 
     private void addToList(Projekt p) {
@@ -114,7 +109,7 @@ public class StudentMainController {
             controller.setSelectedProject(selectedItem);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
-
+            listProjekte.getSelectionModel().selectFirst();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -138,7 +133,9 @@ public class StudentMainController {
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
             if (controller.isOkClicked())
-                reloadList();
+                controller.writeFiles();
+                setUser(this.user);
+                  reloadList();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -164,8 +161,12 @@ public class StudentMainController {
             controller.setLists(ansprechpartnerListe, dozentenListe, projekteListe, user);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
-            if (controller.isOkClicked())
-                addToList(controller.getNewProject());
+            if (controller.isOkClicked()) {
+                controller.getNewProject();
+                setUser(this.user);
+                reloadList();
+                listProjekte.getSelectionModel().selectLast();
+            }else listProjekte.getSelectionModel().selectFirst();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -190,7 +191,7 @@ public class StudentMainController {
             }
             organisationsListe = db.readOrgTable();
             ansprechpartnerListe = db.readAnspTable(organisationsListe);
-            projekteListe = db.readProjects(user, studentenListe, dozentenListe, ansprechpartnerListe);
+            projekteListe = db.readStudentProjects(user, studentenListe, dozentenListe, ansprechpartnerListe);
 
             db.disconnectDB();
         } catch (Exception e) {

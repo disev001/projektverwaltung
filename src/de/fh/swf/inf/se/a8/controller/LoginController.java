@@ -44,7 +44,7 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        txtUser.setText("klug.uwe@fh-swf.de");
+        txtUser.setText("ritter.daniel@fh-swf.de");
         pw.setText("test");
         userevent();
         pwevent();
@@ -79,25 +79,27 @@ public class LoginController {
                     e.printStackTrace();
                 }
             else try {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(Main.class.getResource("view/dozentMain.fxml"));
-                AnchorPane page = loader.load();
-                Stage dialogStage = new Stage();
-                dialogStage.setTitle("Dozent Projektverwaltung");
-                dialogStage.initModality(Modality.WINDOW_MODAL);
-                dialogStage.initOwner(this.dialogStage);
-                Scene scene = new Scene(page);
-                dialogStage.setScene(scene);
-                DozentMainController controller = loader.getController();
-                controller.setMainApp(mainApp);
-                controller.setDialogStage(dialogStage);
-                controller.setUser(user);
-                mainApp.getPrimaryStage().close();
-                dialogStage.showAndWait();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(Main.class.getResource("view/dozentMain.fxml"));
+                    AnchorPane page = loader.load();
+                    Stage dialogStage = new Stage();
+                    dialogStage.setTitle("Dozenten Projektverwaltung");
+                    dialogStage.initModality(Modality.WINDOW_MODAL);
+                    dialogStage.initOwner(this.dialogStage);
+                    Scene scene = new Scene(page);
+                    dialogStage.setScene(scene);
+                    DozentMainController controller = loader.getController();
+                    controller.setMainApp(mainApp);
+                    controller.setDialogStage(dialogStage);
+                    controller.setUser(user);
+                    mainApp.getPrimaryStage().close();
+                    dialogStage.showAndWait();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
         } catch (Exception e) {
+            e.printStackTrace();
             new InfoWindows("Ungültiger Login", "Ungültiger Login", "Ungültiger Login");
         }
     }

@@ -14,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -137,7 +136,7 @@ public class ProjektAnzeigenController {
     public void setSelectedProject(Projekt selectedProject) {
         this.selectedProject = selectedProject;
         lblProjekttitel.setText(selectedProject.getProjekttitel());
-        lblEnscheidung.setText(selectedProject.getEntscheidung());
+        lblEnscheidung.setText(selectedProject.getEntscheidungAsString());
         tfComment.setText(selectedProject.getKommentar());
         lblAnsprechpartner.setText(selectedProject.getAnsprechpartner().getName()+", "+selectedProject.getAnsprechpartner().getVorname());
         lblDozent.setText(selectedProject.getDozent().getNachname()+", "+selectedProject.getDozent().getVorname());

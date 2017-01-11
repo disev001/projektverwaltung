@@ -81,15 +81,13 @@ public class ProjektDetailsAddController {
             selectedProject.setProjekttitel(txtProjektTitel.getText());
             selectedProject.setProjektskizze(skizze);
             selectedProject.setProjektbeschreibung(beschreibung);
-            writeFiles();
+
             dialogStage.close();
-        }catch (IllegalArgumentException e)
-        {
-            new InfoWindows("Fehler","Keine Daten zum Upload Hinzugefügt","Bitte wählen Sie Daten zum Upload aus");
+        } catch (IllegalArgumentException e) {
+            new InfoWindows("Fehler", "Keine Daten zum Upload Hinzugefügt", "Bitte wählen Sie Daten zum Upload aus");
             isOkClicked = false;
             selectedProject.setProjekttitel(oldTitle);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             isOkClicked = false;
             selectedProject.setProjekttitel(oldTitle);
         }
@@ -108,19 +106,19 @@ public class ProjektDetailsAddController {
         this.selectedProject = selectedProject;
         txtProjektTitel.setText(selectedProject.getProjekttitel());
         oldTitle = selectedProject.getProjekttitel();
-        //TODO: Ausblenden von uploads bei bereits eingegangenen daten
-     /*   if(selectedProject.getProjektbeschreibung() != null)
-            btnBeschreibung.setDisable(false);
-        if (selectedProject.getProjektskizze() != null)
-            btnSkizze.setDisable(false);*/
     }
 
-    private void writeFiles() throws Exception{
+    public void writeFiles() {
         DBcontroller db = new DBcontroller();
-        db.connectDB();
-        if (db.insertFile(selectedProject, oldTitle)) {
-            oldTitle = selectedProject.getProjekttitel();
-        }else throw new IllegalArgumentException();
-        db.disconnectDB();
+        try {
+            db.connectDB();
+            if (db.insertFile(selectedProject, oldTitle)) {
+                oldTitle = selectedProject.getProjekttitel();
+            } else throw new IllegalArgumentException();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.disconnectDB();
+        }
     }
 }

@@ -32,7 +32,10 @@ public class OrganisationAnlegenController {
     @FXML
     private Button btnCancel;
 
+
+
     private ObservableList<Organisation> organisationList;
+    private Organisation newOrg = null;
     private Stage dialogStage;
     private boolean okClicked = false;
     private Main mainApp;
@@ -50,8 +53,6 @@ public class OrganisationAnlegenController {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 try {
-
-
                     if (newValue.length() > 0)
                         Integer.parseInt(newValue);
                     if (newValue.length() > 5) {
@@ -90,10 +91,15 @@ public class OrganisationAnlegenController {
             } else {
                 plz = Integer.parseInt(txtPLZ.getText());
             }
-            organisationList.add(new Organisation(txtOrg.getText(), plz, txtOrt.getText(), txtStreet.getText()));
+            newOrg = new Organisation(txtOrg.getText(), plz, txtOrt.getText(), txtStreet.getText());
+            DBcontroller db = new DBcontroller();
+            db.connectDB();
+            db.insertNewOrg(newOrg);
+            db.disconnectDB();
         } catch (Exception e) {
             new InfoWindows("FEHLER", null, "Ungültige Parameter für eine Organisation");
         }
+
         dialogStage.close();
     }
 
@@ -109,6 +115,9 @@ public class OrganisationAnlegenController {
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(txtPLZ.getText().toString());
         return m.matches();
+    }
+    public Organisation getNewOrg() {
+        return newOrg;
     }
 }
 

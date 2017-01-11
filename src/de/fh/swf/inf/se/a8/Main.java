@@ -76,7 +76,7 @@ public class Main extends Application {
      * Laden der Stage für Unternehmen anlegen Dialogfenster
      *
      * @return reaktion auf die art des fenster schließens
-     */
+
     public boolean showNewOrg() {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -98,14 +98,14 @@ public class Main extends Application {
             return false;
         }
     }
-
+     */
     /**
      * Laden der Stage für Unternehmen editieren Dialogfenster
      *
      * @param o aktuelle unternehmen
      * @return reaktion auf die art des fenster schließens
      */
-    public boolean showEditOrg(Organisation o) {
+ /*   public boolean showEditOrg(Organisation o) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/orgEditWindow.fxml"));
@@ -133,7 +133,7 @@ public class Main extends Application {
      *
      * @param a aktueller Ansprechpartner
      * @return reaktion auf die art des fenster schließens
-     */
+
     public boolean showEditAnsp(Ansprechpartner a) {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -148,21 +148,21 @@ public class Main extends Application {
             AnsprechpartnerEditierenController controller = loader.getController();
             controller.setMainApp(this);
             controller.setDialogStage(dialogStage);
-            controller.setAnsprechpartner(a);
+            controller.setNewAnsprechpartner(a);
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-    }
+    }*/
 
     /**
      * Laden der Stage für Unternehmen anlegen Dialogfenster
      *
      * @param list aktuelle unternehmen
      * @return reaktion auf die art des fenster schließens
-     */
+
     public boolean showNewAnsp(ObservableList<Organisation> list) {
         try {
             FXMLLoader loader = new FXMLLoader();

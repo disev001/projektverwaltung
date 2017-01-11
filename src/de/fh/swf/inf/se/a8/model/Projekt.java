@@ -103,18 +103,18 @@ public class Projekt {
      * @param student
      */
     public void addStudent(Student student) throws IllegalArgumentException {
-
-
         if (student != null)
 
-            if (this.projektgruppe.size() < 3)
+            if (this.projektgruppe.size() < 3 && (!projektgruppe.contains(student)))
                 this.projektgruppe.add(student);
             else System.out.print("\nGruppe voll!\n");
         else throw new IllegalArgumentException("\n Student wurde nicht hinzugefügt\n");
 
     }
-
-    public String getEntscheidung() {
+    public int getEntscheidung() {
+     return entscheidung;
+    }
+    public String getEntscheidungAsString() {
         switch (entscheidung) {
             case 1:
                 return "Zugelassen";
@@ -144,14 +144,28 @@ public class Projekt {
     public Student getDozent() {
         return dozent;
     }
-
+    public boolean removeStudent(Student student){
+        boolean status = false;
+        for (Student s : projektgruppe) {
+          if(student.equals(s)){
+              projektgruppe.remove(s);
+                status = true;
+                break;
+        }}
+        for (Student s : projektgruppe) {
+            if(student.equals(s)){
+                mkNr1=s.getMatrikelnummer();
+                break;
+            }}
+        return status;
+    }
     public void setDozent(Student dozent) {
         this.dozent = dozent;
     }
     @Override
     public String toString() {
         this.projekttitel = projekttitel;
-        this.projektbeschreibung = projektbeschreibung;
+        //this.projektbeschreibung = projektbeschreibung;
         //this.projektgruppe = projektgruppe;
         String studenten = "";
         int i = 0;

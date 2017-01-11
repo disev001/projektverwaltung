@@ -40,6 +40,8 @@ public class AnsprechpartnerAnlegenController {
     private Main mainApp;
     private ObservableList<Organisation> organisationList;
     private Stage dialogStage;
+    private Ansprechpartner newAnsprechpartner  = null;
+    private Organisation newOrg = null;
 
 
     /**
@@ -79,7 +81,14 @@ public class AnsprechpartnerAnlegenController {
     public void setListe() {
         ObservableList<String> organisationAuswahl = FXCollections.observableArrayList();
         this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
-        this.organisationList = this.mainApp.getOrganisations();
+        try {
+            DBcontroller db = new DBcontroller();
+            db.connectDB();
+            this.organisationList = db.readOrgTable();
+            db.disconnectDB();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         for (Organisation o : organisationList) {
             organisationAuswahl.add(o.getName());
         }
@@ -92,19 +101,18 @@ public class AnsprechpartnerAnlegenController {
     @FXML
     public void handleOK() {
         try {
-
-            if (isValidEmailAddress(txtMail.getText()))
-            {
-                ansprechpartnerList.add(new Ansprechpartner(txtNname.getText(), txtVname.getText(), txtMail.getText(), txtTel.getText(), org));
-                okClicked = true;
-                dialogStage.close();
-            }
-            else throw new IllegalArgumentException();
-        } catch (IllegalArgumentException e)
-        {
+            if (isValidEmailAddress(txtMail.getText())) {
+                newAnsprechpartner = new Ansprechpartner(txtNname.getText(), txtVname.getText(), txtMail.getText(), txtTel.getText(), org);
+            } else throw new IllegalArgumentException();
+            okClicked = true;
+            DBcontroller db = new DBcontroller();
+            db.connectDB();
+            db.inserNewAnsprechpartner(newAnsprechpartner);
+            db.disconnectDB();
+            dialogStage.close();
+        } catch (IllegalArgumentException e) {
             new InfoWindows("FEHLER", "Ungültige Parameter für einen Ansprechpartner", "Ungültiges Format für Email");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             new InfoWindows("FEHLER", "Ungültige Parameter für einen Ansprechpartner", "Ungültige Parameter für einen Ansprechpartner\nBitte überprüfen Sie ihre eingaben");
         }
     }
@@ -115,7 +123,7 @@ public class AnsprechpartnerAnlegenController {
      * @return Bestätigunsart
      */
     @FXML
-    public boolean handleNewOrg() {
+    public void handleNewOrg() {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/orgNewWindow.fxml"));
@@ -127,15 +135,15 @@ public class AnsprechpartnerAnlegenController {
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
             OrganisationAnlegenController controller = loader.getController();
-            controller.setMainApp(mainApp);
+            controller.setMainApp(this.mainApp);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
-            setListe();
-            return controller.isOkClicked();
-
+            if (controller.isOkClicked()) {
+                newOrg = controller.getNewOrg();
+                setListe();
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
@@ -145,7 +153,9 @@ public class AnsprechpartnerAnlegenController {
         java.util.regex.Matcher m = p.matcher(email);
         return m.matches();
     }
-
+    public Ansprechpartner getNewAnsprechpartner(){
+        return this.newAnsprechpartner;
+    }
     /**
      * Abbruch ohne bestätigung
      */
@@ -153,5 +163,9 @@ public class AnsprechpartnerAnlegenController {
     private void handleCancel() {
         okClicked = false;
         dialogStage.close();
+    }
+
+    public Organisation getNewOrg() {
+        return newOrg;
     }
 }

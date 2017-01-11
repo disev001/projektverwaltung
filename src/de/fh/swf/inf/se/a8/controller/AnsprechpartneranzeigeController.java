@@ -4,14 +4,29 @@ import de.fh.swf.inf.se.a8.Main;
 import de.fh.swf.inf.se.a8.model.Ansprechpartner;
 import de.fh.swf.inf.se.a8.model.Organisation;
 import de.fh.swf.inf.se.a8.model.TreeViewHelper;
+import de.fh.swf.inf.se.a8.view.InfoWindows;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -22,9 +37,17 @@ public class AnsprechpartneranzeigeController {
     @FXML
     private TreeView<Object> tv_AP;
     @FXML
+    private Button ok;
+    @FXML
+    private Label name;
+    @FXML
+    private Label email;
+    @FXML
+    private Label tel;
+    @FXML
     private Label lblAPname;
     @FXML
-    private Label lblAPmail;
+    private Hyperlink lblAPmail;
     @FXML
     private Label lblAPtel;
     @FXML
@@ -51,25 +74,56 @@ public class AnsprechpartneranzeigeController {
 
     private Ansprechpartner selectedAP;
     private Organisation selectedOrg;
-    private boolean isOrg;
+    // private boolean isOrg;
+    private SimpleBooleanProperty isOrgP = new SimpleBooleanProperty(false);
     private Stage dialogStage;
     private Main mainApp;
+    private boolean settinAnsp = true;
+
+
+    private boolean isOkClicked;
 
     /**
      * initialisiert handler der Stage
      */
     @FXML
     public void initialize() {
-
+        isOrgP.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                ok.setDisable(newValue);
+            }
+        });
+        lblAPmail.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() >= 2) {
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop desktop = Desktop.getDesktop();
+                        if (desktop.isSupported(Desktop.Action.MAIL)) {
+                            try {
+                                desktop.mail(new URI("mailto:" + lblAPmail.getText())); // alternately, pass a mailto: URI in here
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (URISyntaxException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        });
         tv_AP.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Object>>() {
             @Override
             public void changed(ObservableValue<? extends TreeItem<Object>> observable, TreeItem<Object> oldValue, TreeItem<Object> newValue) {
                 try {
 
-
                     if (newValue.getValue() instanceof Organisation) {
                         selectedOrg = (Organisation) newValue.getValue();
-                        isOrg = true;
+                        isOrgP.setValue(true);
+                        name.setVisible(false);
+                        tel.setVisible(false);
+                        email.setVisible(false);
                         lblAPname.setText("");
                         lblAPmail.setText("");
                         lblAPtel.setText("");
@@ -79,19 +133,24 @@ public class AnsprechpartneranzeigeController {
                             plz = "";
                         else plz = Integer.toString(selectedOrg.getPlz());
                         lblAPansch.setText(plz + " " + selectedOrg.getOrt() + "\n" + selectedOrg.getStrasse());
-
-                    } else if (newValue.getValue() instanceof Ansprechpartner) {
+                        ok.setDisable(true);
+                    }
+                     if (newValue.getValue() instanceof Ansprechpartner) {
+                        name.setVisible(true);
+                        tel.setVisible(true);
+                        email.setVisible(true);
                         selectedAP = (Ansprechpartner) newValue.getValue();
-                        isOrg = false;
+                        isOrgP.setValue(false);
                         lblAPname.setText(selectedAP.getName() + ", " + selectedAP.getVorname());
                         lblAPmail.setText(selectedAP.getEmail());
                         lblAPtel.setText(selectedAP.getTelefon());
                         lblAPorg.setText(selectedAP.getUnternehmen().getName());
                         String plz;
-                        if (selectedOrg.getPlz() == 0)
+                        if (selectedAP.getUnternehmen().getPlz() == 0)
                             plz = "";
-                        else plz = Integer.toString(selectedOrg.getPlz());
+                        else plz = Integer.toString(selectedAP.getUnternehmen().getPlz());
                         lblAPansch.setText(plz + " " + selectedAP.getUnternehmen().getOrt() + "\n" + selectedAP.getUnternehmen().getStrasse());
+                        ok.setDisable(false);
                     }
                 } catch (Exception e) {
                     ;
@@ -117,16 +176,23 @@ public class AnsprechpartneranzeigeController {
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
         setListe();
+        ok.setDisable(true);
     }
 
     public void setListe() {
-        Organisation org1 = new Organisation("Musterorg", 58762, "Altena", "Amselweg 6a");
-        Organisation org2 = new Organisation("FHSWF", 55442, "Iserlohn", "Frauenstuhlweg 31");
-        Ansprechpartner an1 = new Ansprechpartner("Katze", "Wasilisa", "dsee@doldrums.de", "02352/546521", org1);
-        Ansprechpartner an2 = new Ansprechpartner("Klug", "Uwe", "klug.uwe@fh-swf.de", "02242/8087652", org1);
 
-        this.organisationList.addAll(org1, org2);
-        this.ansprechpartnerList.addAll(an1, an2);
+        DBcontroller db = new DBcontroller();
+        try {
+            db.connectDB();
+            organisationList = db.readOrgTable();
+            ansprechpartnerList = db.readAnspTable(organisationList);
+        } catch (Exception e) {
+            new InfoWindows("Fehler", "Ansprechpartner konnten nicht abgerufen werden", e.getLocalizedMessage());
+        } finally {
+            db.disconnectDB();
+        }
+
+
         loadTreeItems();
         //  this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
         //  this.organisationList = this.mainApp.getOrganisations();
@@ -135,17 +201,58 @@ public class AnsprechpartneranzeigeController {
 
     @FXML
     public void handleNewOrg() {
-        if (this.mainApp.showNewOrg()) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/orgNewWindow.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ogranisation anlegen");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(this.dialogStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            OrganisationAnlegenController controller = loader.getController();
+            controller.setMainApp(this.mainApp);
+            controller.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
+            if (controller.isOkClicked()) {
+                organisationList.add(controller.getNewOrg());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
             loadTreeItems();
         }
     }
 
     @FXML
     public void handleNewAnsprechpartner() {
-        if (this.mainApp.showNewAnsp(this.organisationList)) {
-            loadTreeItems();
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/anspNewWindow.fxml"));
+            AnchorPane page = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ansprechpartner anlegen");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(this.dialogStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+            AnsprechpartnerAnlegenController controller = loader.getController();
+            controller.setMainApp(this.mainApp);
+            controller.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
+            if (controller.isOkClicked()) {
+                ansprechpartnerList.add(controller.getNewAnsprechpartner());
+                if (controller.getNewOrg() != null)
+                    organisationList.add(controller.getNewOrg());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        loadTreeItems();
     }
+
 
     /**
      * Löschen der Aktuellen TreeView auswahl
@@ -157,27 +264,35 @@ public class AnsprechpartneranzeigeController {
         boolean found = false;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Löschen");
-        if (isOrg) {
+        if (isOrgP.getValue()) {
             alert.setHeaderText("Lösche Organisation");
-            alert.setContentText("Lösche  Organisation " + selectedOrg.getName() + " und alle zugehörigen Ansprechpartner?");
+            alert.setContentText("Lösche  Organisation " + selectedOrg.getName() + " und alle zugehörigen Ansprechpartner und Projekte?");
         } else {
             alert.setHeaderText("Lösche  Ansprechpartner");
-            alert.setContentText("Lösche  Ansprechpartner " + selectedAP.getName() + ", " + selectedAP.getVorname() + " und alle zugehörigen Ansprechpartner?");
+            alert.setContentText("Lösche  Ansprechpartner " + selectedAP.getName() + ", " + selectedAP.getVorname()+"und alle zugehörigen Projekte?");
         }
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
 
             while (!found) {
-                if (isOrg) {
+                if (isOrgP.getValue()) {
                     for (Organisation o : organisationList) {
                         if (o.equals(selectedOrg)) {
                             for (Ansprechpartner a : ansprechpartnerList) {
                                 if (a.getUnternehmen().equals(o)) {
-                                    ansprechpartnerList.remove(a);
-                                    break;
+                                    try {
+                                        ansprechpartnerList.remove(a);
+                                        break;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
-                            organisationList.remove(o);
+                            DBcontroller db = new DBcontroller();
+                            db.connectDB();
+                            if (db.deleteOrg(o))
+                                organisationList.remove(o);
+                            db.disconnectDB();
                             loadTreeItems();
                             found = true;
                             break;
@@ -185,10 +300,18 @@ public class AnsprechpartneranzeigeController {
                     }
                 } else for (Ansprechpartner a : ansprechpartnerList) {
                     if (a.equals(selectedAP)) {
-                        ansprechpartnerList.remove(a);
-                        loadTreeItems();
-                        found = true;
-                        break;
+                        try {
+                            DBcontroller db = new DBcontroller();
+                            db.connectDB();
+                            if (db.deleteAnsprechpartner(a)) ;
+                            ansprechpartnerList.remove(a);
+                            db.disconnectDB();
+                            loadTreeItems();
+                            found = true;
+                            break;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -201,16 +324,53 @@ public class AnsprechpartneranzeigeController {
      */
     @FXML
     public void handleEdit() {
-        if (isOrg) {
+        if (isOrgP.getValue()) {
             for (Organisation o : organisationList) {
                 if (o.equals(selectedOrg)) {
-                    this.mainApp.showEditOrg(o);
+                    try {
+                        FXMLLoader loader = new FXMLLoader();
+                        loader.setLocation(Main.class.getResource("view/orgEditWindow.fxml"));
+                        AnchorPane page = loader.load();
+                        Stage dialogStage = new Stage();
+                        dialogStage.setTitle("Ansprechpartner anlegen");
+                        dialogStage.initModality(Modality.WINDOW_MODAL);
+                        dialogStage.initOwner(this.dialogStage);
+                        Scene scene = new Scene(page);
+                        dialogStage.setScene(scene);
+                        OrganisationEditierenController controller = loader.getController();
+                        controller.setMainApp(this.mainApp);
+                        controller.setDialogStage(dialogStage);
+                        controller.setOrg(o);
+                        dialogStage.showAndWait();
+                        loadTreeItems();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 loadTreeItems();
             }
         } else for (Ansprechpartner a : ansprechpartnerList) {
             if (a.equals(selectedAP)) {
-                this.mainApp.showEditAnsp(a);
+                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(Main.class.getResource("view/anspEditWindow.fxml"));
+                    AnchorPane page = loader.load();
+                    Stage dialogStage = new Stage();
+                    dialogStage.setTitle("Ansprechpartner Editieren");
+                    dialogStage.initModality(Modality.WINDOW_MODAL);
+                    dialogStage.initOwner(this.dialogStage);
+                    Scene scene = new Scene(page);
+                    dialogStage.setScene(scene);
+                    AnsprechpartnerEditierenController controller = loader.getController();
+                    controller.setMainApp(this.mainApp);
+                    controller.setDialogStage(dialogStage);
+                    controller.setListe(organisationList);
+                    controller.setNewAnsprechpartner(a);
+                    dialogStage.showAndWait();
+                    loadTreeItems();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             loadTreeItems();
         }
@@ -235,8 +395,23 @@ public class AnsprechpartneranzeigeController {
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
-    @FXML void handleOK(){
-            dialogStage.close();
+
+    @FXML
+    void handleOK() {
+        isOkClicked = true;
+        dialogStage.close();
     }
 
+    public void setSettinAnsp(boolean settinAnsp) {
+        this.settinAnsp = settinAnsp;
+        if (!settinAnsp)
+            isOrgP.set(true);
+    }
+    public boolean isOkClicked() {
+        return isOkClicked;
+    }
+
+    public Ansprechpartner getNewAP() {
+        return selectedAP;
+    }
 }

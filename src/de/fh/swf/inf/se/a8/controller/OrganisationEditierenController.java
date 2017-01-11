@@ -32,11 +32,12 @@ public class OrganisationEditierenController {
     @FXML
     private Button btnCancel;
 
-    private Organisation editOrg;
+    private Organisation orgNew;
     private ObservableList<Organisation> organisationList;
     private Stage dialogStage;
     private boolean okClicked = false;
     private Main mainApp;
+    private Organisation orgOld;
 
     /**
      * initialisiert handler der Stage
@@ -74,7 +75,8 @@ public class OrganisationEditierenController {
      * @param o
      */
     public void setOrg(Organisation o) {
-        editOrg = o;
+        orgNew = o;
+        orgOld = o;
         txtOrg.setText(o.getName());
         txtOrt.setText(o.getOrt());
         if(o.getPlz() != 0)
@@ -95,12 +97,13 @@ public class OrganisationEditierenController {
     private void handleOk() {
         okClicked = true;
         try {
-            editOrg.setName(txtOrg.getText());
-            editOrg.setOrt(txtOrt.getText());
+            orgNew.setName(txtOrg.getText());
+            orgNew.setOrt(txtOrt.getText());
             if(isValidPLZ())
-            editOrg.setPlz(Integer.parseInt(txtPLZ.getText()));
-            else editOrg.setPlz(0);
-            editOrg.setStrasse(txtStreet.getText());
+                orgNew.setPlz(Integer.parseInt(txtPLZ.getText()));
+            else orgNew.setPlz(0);
+            orgNew.setStrasse(txtStreet.getText());
+            setOrg();
 
         } catch (Exception e) {
             new InfoWindows("FEHLER", null, "Ungültige Parameter für eine Organisation");
@@ -119,6 +122,16 @@ public class OrganisationEditierenController {
         okClicked = false;
         dialogStage.close();
     }
+    private void setOrg() {
+        try {
 
+            DBcontroller db = new DBcontroller();
+            db.connectDB();
+            db.updateOrganisation(orgNew, orgOld);
+            db.disconnectDB();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

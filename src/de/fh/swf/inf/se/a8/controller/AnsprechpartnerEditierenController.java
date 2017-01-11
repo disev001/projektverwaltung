@@ -35,11 +35,12 @@ public class AnsprechpartnerEditierenController {
     private TextField txtTel;
     private ObservableList<Ansprechpartner> ansprechpartnerList;
     private Organisation org = null;
-    private Ansprechpartner ansprechpartner;
+    private Ansprechpartner newAnsprechpartner;
     private boolean okClicked = false;
     private Main mainApp;
     private ObservableList<Organisation> organisationList;
     private Stage dialogStage;
+    private Ansprechpartner oldAnsprechpartner;
 
 
     /**
@@ -47,7 +48,6 @@ public class AnsprechpartnerEditierenController {
      */
     @FXML
     private void initialize() {
-
         cb_Org.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -66,7 +66,6 @@ public class AnsprechpartnerEditierenController {
 
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
-        setListe();
     }
 
     public void setDialogStage(Stage dialogStage) {
@@ -76,10 +75,10 @@ public class AnsprechpartnerEditierenController {
     /**
      * Setze verfügbare Organisationen in die Liste zur auswahl
      */
-    public void setListe() {
+    public void setListe(ObservableList<Organisation> org) {
         ObservableList<String> organisationAuswahl = FXCollections.observableArrayList();
         this.ansprechpartnerList = this.mainApp.getAnsprechpartners();
-        this.organisationList = this.mainApp.getOrganisations();
+        this.organisationList = org;
         for (Organisation o : organisationList) {
             organisationAuswahl.add(o.getName());
         }
@@ -92,19 +91,18 @@ public class AnsprechpartnerEditierenController {
     @FXML
     public void handleOK() {
         try {
-            if(isValidEmailAddress(txtMail.getText())){
-            ansprechpartner.setName(txtNname.getText());
-            ansprechpartner.setVorname(txtVname.getText());
-            ansprechpartner.setTelefon(txtTel.getText());
-            ansprechpartner.setEmail(txtMail.getText());
-            ansprechpartner.setUnternehmen(org);
-            dialogStage.close();}
-            else  throw new IllegalArgumentException();
-        }catch (IllegalArgumentException e)
-        {
+            if (isValidEmailAddress(txtMail.getText())) {
+                newAnsprechpartner.setName(txtNname.getText());
+                newAnsprechpartner.setVorname(txtVname.getText());
+                newAnsprechpartner.setTelefon(txtTel.getText());
+                newAnsprechpartner.setEmail(txtMail.getText());
+                newAnsprechpartner.setUnternehmen(org);
+                setAnsp();
+                dialogStage.close();
+            } else throw new IllegalArgumentException();
+        } catch (IllegalArgumentException e) {
             new InfoWindows("FEHLER", "Ungültige Parameter für einen Ansprechpartner", "Ungültiges Format für Email");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             new InfoWindows("FEHLER", null, "Ungültige Parameter für einen Ansprechpartner");
         }
 
@@ -115,6 +113,7 @@ public class AnsprechpartnerEditierenController {
         okClicked = false;
         dialogStage.close();
     }
+
     @FXML
 
     /**
@@ -132,11 +131,11 @@ public class AnsprechpartnerEditierenController {
             dialogStage.initOwner(this.dialogStage);
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
-            OrganisationAnlegenController controller= loader.getController();
-            controller.setMainApp(mainApp);
+            OrganisationAnlegenController controller = loader.getController();
+            controller.setMainApp(this.mainApp);
             controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
-            setListe();
+            setListe(this.organisationList);
             return controller.isOkClicked();
 
         } catch (IOException e) {
@@ -144,23 +143,41 @@ public class AnsprechpartnerEditierenController {
             return false;
         }
     }
+
     private boolean isValidEmailAddress(String email) {
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
         return m.matches();
     }
+
     /**
      * Setze Aktuelle Werte in die TextEdit boxen
-     * @param ansprechpartner
+     *
+     * @param newAnsprechpartner
      */
-    public void setAnsprechpartner(Ansprechpartner ansprechpartner) {
-        setListe();
-        this.ansprechpartner = ansprechpartner;
-        txtVname.setText(ansprechpartner.getVorname());
-        txtNname.setText(ansprechpartner.getName());
-        txtMail.setText(ansprechpartner.getEmail());
-        txtTel.setText(ansprechpartner.getTelefon());
-        cb_Org.getSelectionModel().select(ansprechpartner.getUnternehmen().getName());
+    public void setNewAnsprechpartner(Ansprechpartner newAnsprechpartner) {
+        this.oldAnsprechpartner = newAnsprechpartner;
+        setListe(this.organisationList);
+        this.newAnsprechpartner = newAnsprechpartner;
+        txtVname.setText(newAnsprechpartner.getVorname());
+        txtNname.setText(newAnsprechpartner.getName());
+        txtMail.setText(newAnsprechpartner.getEmail());
+        txtTel.setText(newAnsprechpartner.getTelefon());
+        org = newAnsprechpartner.getUnternehmen();
+        cb_Org.getSelectionModel().select(newAnsprechpartner.getUnternehmen().getName());
     }
+
+    private void setAnsp() {
+        try {
+
+            DBcontroller db = new DBcontroller();
+            db.connectDB();
+            db.updateAnsprechpartner(newAnsprechpartner, oldAnsprechpartner);
+            db.disconnectDB();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
